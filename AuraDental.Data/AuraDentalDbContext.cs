@@ -39,6 +39,22 @@ namespace AuraDental.Data
                 new Rol { RolId = 2, Nombre = "Paciente" },
                 new Rol { RolId = 3, Nombre = "Asistente" }
             );
+
+            // Usuario Administrador por defecto (contraseña: Admin123, ya hasheada con BCrypt).
+            // Se crea automáticamente al aplicar las migraciones, no se puede registrar
+            // un Administrador desde el formulario público.
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
+                {
+                    UsuarioId = 1,
+                    NombreCompleto = "Administrador",
+                    Email = "Admin",
+                    PasswordHash = "$2b$11$d5.lXPkCEuYNABoynEZpQ.MR6bzSzsgCJdkHRLWlT51wrH/wiWM5W",
+                    RolId = 1,
+                    Activo = true,
+                    FechaCreacion = new DateTime(2026, 7, 11)
+                }
+            );
         }
     }
 }

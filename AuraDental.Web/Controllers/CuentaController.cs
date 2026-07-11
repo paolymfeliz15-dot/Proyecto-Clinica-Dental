@@ -57,21 +57,22 @@ namespace AuraDental.Web.Controllers
         [HttpGet]
         public IActionResult Registro()
         {
-            ViewBag.Roles = _context.Roles.ToList();
+            // Se elimina la carga de la lista de roles en ViewBag ya que el registro es público
             return View();
         }
 
         [HttpPost]
-        public IActionResult Registro(string nombreCompleto, string email, string password, int rolId)
+        public IActionResult Registro(string nombreCompleto, string email, string password)
         {
             if (_authService.ExisteEmail(email))
             {
                 ViewBag.Error = "Ese correo ya está registrado.";
-                ViewBag.Roles = _context.Roles.ToList();
                 return View();
             }
 
-            _authService.RegistrarUsuario(nombreCompleto, email, password, rolId);
+            // Todo registro público es forzosamente Paciente (RolId = 2).
+            // Administradores y Asistentes solo los crea un Administrador desde /Personal/Crear.
+            _authService.RegistrarUsuario(nombreCompleto, email, password, rolId: 2);
 
             return RedirectToAction("Login");
         }
