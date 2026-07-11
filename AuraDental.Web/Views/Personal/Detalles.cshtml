@@ -1,0 +1,28 @@
+﻿@model AuraDental.Data.Entities.Usuario
+
+@{
+    ViewData["Title"] = "Detalles de Personal";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2>Detalles</h2>
+
+    <dl class="row">
+        <dt class="col-sm-4">Nombre</dt>
+        <dd class="col-sm-8">@Model.NombreCompleto</dd>
+
+        <dt class="col-sm-4">Correo</dt>
+        <dd class="col-sm-8">@Model.Email</dd>
+
+        <dt class="col-sm-4">Rol</dt>
+        <dd class="col-sm-8">@Model.Rol.Nombre</dd>
+
+        <dt class="col-sm-4">Estado</dt>
+        <dd class="col-sm-8">@(Model.Activo ? "Activo" : "Inactivo")</dd>
+
+        <dt class="col-sm-4">Fecha de creación</dt>
+        <dd class="col-sm-8">@Model.FechaCreacion.ToString("dd/MM/yyyy")</dd>
+    </dl>
+
+    <a asp-action="Index" class="btn btn-outline-secondary">← Volver</a>
+</div>

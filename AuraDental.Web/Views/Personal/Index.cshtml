@@ -1,0 +1,63 @@
+﻿@model List<AuraDental.Data.Entities.Usuario>
+
+@{
+    ViewData["Title"] = "Gestionar Personal";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestionar Personal</h2>
+        <a asp-action="Crear" class="btn btn-primary">+ Nuevo</a>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.NombreCompleto</td>
+                    <td>@usuario.Email</td>
+                    <td>@usuario.Rol.Nombre</td>
+                    <td>
+                        @if (usuario.Activo)
+                        {
+                            <span class="badge bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Detalles" asp-route-id="@usuario.UsuarioId" class="btn btn-sm btn-outline-info">Ver</a>
+                        <a asp-action="Editar" asp-route-id="@usuario.UsuarioId" class="btn btn-sm btn-outline-primary">Editar</a>
+
+                        <form asp-action="CambiarEstado" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@usuario.UsuarioId" />
+                            <input type="hidden" name="activo" value="@(!usuario.Activo)" />
+                            @if (usuario.Activo)
+                            {
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Desactivar</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-sm btn-outline-success">Activar</button>
+                            }
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-controller="AdministradorDashboard" asp-action="Index" class="btn btn-link">← Volver al panel</a>
+</div>

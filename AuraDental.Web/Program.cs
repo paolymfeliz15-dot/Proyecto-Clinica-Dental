@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<IPersonalService, PersonalService>();
+
 // Registro del DbContext con la cadena de conexión
 builder.Services.AddDbContext<AuraDentalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AuraDentalConnection")));

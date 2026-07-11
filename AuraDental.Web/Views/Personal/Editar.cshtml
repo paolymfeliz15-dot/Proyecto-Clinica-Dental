@@ -1,0 +1,38 @@
+﻿@model AuraDental.Data.Entities.Usuario
+
+@{
+    ViewData["Title"] = "Editar Personal";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2>Editar Personal</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Editar" method="post">
+        <input type="hidden" name="UsuarioId" value="@Model.UsuarioId" />
+
+        <div class="mb-3">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" name="NombreCompleto" class="form-control" value="@Model.NombreCompleto" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Rol</label>
+            <select name="RolId" class="form-select" required>
+                @foreach (var rol in ViewBag.Roles)
+                {
+                    <option value="@rol.RolId" selected="@(rol.RolId == Model.RolId)">@rol.Nombre</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>
