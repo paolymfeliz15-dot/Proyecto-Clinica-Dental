@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="container mt-5" style="max-width: 400px;">
+    <h2 class="text-center mb-4">AuraDental</h2>
+    <h4 class="text-center mb-4">Iniciar Sesión</h4>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form method="post" asp-action="Login">
+        <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" name="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+    </form>
+
+    <p class="text-center mt-3">
+        ¿No tienes cuenta? <a asp-action="Registro">Regístrate aquí</a>
+    </p>
+</div>
