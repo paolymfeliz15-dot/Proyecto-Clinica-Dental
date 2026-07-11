@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Panel de Administrador";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bienvenido/a, @ViewBag.NombreCompleto</h2>
+        <a asp-controller="Cuenta" asp-action="Logout" class="btn btn-outline-danger">Cerrar sesión</a>
+    </div>
+
+    <h5 class="text-muted mb-3">Panel de Administrador</h5>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a asp-controller="Personal" asp-action="Index" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5>Gestionar Personal</h5>
+                    <p class="text-muted mb-0">Administradores y asistentes</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Provincias" asp-action="Index" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5>Gestionar Provincias</h5>
+                    <p class="text-muted mb-0">Activar / desactivar provincias</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Panel de Asistente";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bienvenido/a, @ViewBag.NombreCompleto</h2>
+        <a asp-controller="Cuenta" asp-action="Logout" class="btn btn-outline-danger">Cerrar sesión</a>
+    </div>
+
+    <h5 class="text-muted mb-3">Panel de Asistente</h5>
+    <p class="text-muted">Aquí irán las funciones de Gestionar Agenda y Registrar Expedientes (Sprint 2).</p>
+</div>

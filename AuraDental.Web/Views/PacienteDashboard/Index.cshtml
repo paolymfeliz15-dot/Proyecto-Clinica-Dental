@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Panel de Paciente";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bienvenido/a, @ViewBag.NombreCompleto</h2>
+        <a asp-controller="Cuenta" asp-action="Logout" class="btn btn-outline-danger">Cerrar sesión</a>
+    </div>
+
+    <h5 class="text-muted mb-3">Panel de Paciente</h5>
+    <p class="text-muted">Aquí irán Consultar Disponibilidad, Agendar Cita y Ver Historial Clínico (Sprint 2).</p>
+</div>
