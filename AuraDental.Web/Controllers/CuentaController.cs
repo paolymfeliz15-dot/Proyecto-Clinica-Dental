@@ -23,6 +23,11 @@ namespace AuraDental.Web.Controllers
             return View();
         }
 
+        public IActionResult AccesoDenegado()
+        {
+            return View();
+        }
+
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
