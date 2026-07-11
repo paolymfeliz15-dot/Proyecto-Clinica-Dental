@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using AuraDental.Data.Entities;
 
 namespace AuraDental.Data
 {
@@ -14,14 +15,30 @@ namespace AuraDental.Data
         {
         }
 
-        // Aquí irán los DbSet<> de cada entidad (Paciente, Cita, etc.)
-        // según vayan avanzando las Historias de Usuario del Sprint 1
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Rol> Roles { get; set; }
+        public DbSet<Provincia> Provincias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Aquí irán las configuraciones Fluent API de cada entidad
+            // Un email no se puede repetir entre usuarios
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            // Un nombre de provincia no se puede repetir
+            modelBuilder.Entity<Provincia>()
+                .HasIndex(p => p.Nombre)
+                .IsUnique();
+
+            // Datos semilla: los 3 roles del sistema, ya creados desde el inicio
+            modelBuilder.Entity<Rol>().HasData(
+                new Rol { RolId = 1, Nombre = "Administrador" },
+                new Rol { RolId = 2, Nombre = "Paciente" },
+                new Rol { RolId = 3, Nombre = "Asistente" }
+            );
         }
     }
 }
