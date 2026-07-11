@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AuraDental.Data/AuraDental.Data.csproj" />
+  <Project Path="AuraDental.Services/AuraDental.Services.csproj" />
+  <Project Path="AuraDental.Tests/AuraDental.Tests.csproj" />
+  <Project Path="AuraDental.Web/AuraDental.Web.csproj" />
+</Solution>
