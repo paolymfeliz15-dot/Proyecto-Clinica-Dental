@@ -1,7 +1,14 @@
+using AuraDental.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Registro del DbContext con la cadena de conexión
+builder.Services.AddDbContext<AuraDentalDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuraDentalConnection")));
 
 var app = builder.Build();
 
