@@ -47,8 +47,8 @@ namespace AuraDental.Data
             // un Administrador desde el formulario público.
 
             modelBuilder.Entity<Servicio>()
-    .HasIndex(s => s.Nombre)
-    .IsUnique();
+                .HasIndex(s => s.Nombre)
+                .IsUnique();
 
             modelBuilder.Entity<Servicio>()
                 .Property(s => s.Precio)
