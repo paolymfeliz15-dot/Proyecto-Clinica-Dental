@@ -19,6 +19,8 @@ namespace AuraDental.Data
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Provincia> Provincias { get; set; }
 
+        public DbSet<Servicio> Servicios { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -43,6 +45,15 @@ namespace AuraDental.Data
             // Usuario Administrador por defecto (contraseña: Admin123, ya hasheada con BCrypt).
             // Se crea automáticamente al aplicar las migraciones, no se puede registrar
             // un Administrador desde el formulario público.
+
+            modelBuilder.Entity<Servicio>()
+    .HasIndex(s => s.Nombre)
+    .IsUnique();
+
+            modelBuilder.Entity<Servicio>()
+                .Property(s => s.Precio)
+                .HasColumnType("decimal(10,2)");
+
             modelBuilder.Entity<Usuario>().HasData(
                 new Usuario
                 {
