@@ -1,0 +1,28 @@
+﻿@model AuraDental.Data.Entities.BloqueAgenda
+
+@{
+    ViewData["Title"] = "Detalles del Bloque";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2>Detalles del Bloque de Agenda</h2>
+
+    <dl class="row">
+        <dt class="col-sm-4">Fecha</dt>
+        <dd class="col-sm-8">@Model.Fecha.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-4">Hora inicio</dt>
+        <dd class="col-sm-8">@Model.HoraInicio.ToString(@"hh\:mm")</dd>
+
+        <dt class="col-sm-4">Hora fin</dt>
+        <dd class="col-sm-8">@Model.HoraFin.ToString(@"hh\:mm")</dd>
+
+        <dt class="col-sm-4">Estado</dt>
+        <dd class="col-sm-8">@(Model.Disponible ? "Disponible" : "Ocupado")</dd>
+
+        <dt class="col-sm-4">Creado por</dt>
+        <dd class="col-sm-8">@Model.Usuario.NombreCompleto</dd>
+    </dl>
+
+    <a asp-action="Index" class="btn btn-outline-secondary">← Volver</a>
+</div>

@@ -1,0 +1,31 @@
+﻿@model AuraDental.Data.Entities.BloqueAgenda
+
+@{
+    ViewData["Title"] = "Nuevo Bloque de Agenda";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2>Nuevo Bloque de Agenda</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Crear" method="post">
+        <div class="mb-3">
+            <label class="form-label">Fecha</label>
+            <input type="date" name="Fecha" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Hora de inicio</label>
+            <input type="time" name="HoraInicio" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Hora de fin</label>
+            <input type="time" name="HoraFin" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>
