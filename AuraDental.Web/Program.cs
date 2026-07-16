@@ -16,6 +16,8 @@ builder.Services.AddDbContext<AuraDentalDbContext>(options =>
 // Registro del servicio de autenticación
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<IServicioService, ServicioService>();
+
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>
 {
