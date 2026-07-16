@@ -1,0 +1,37 @@
+﻿@model AuraDental.Data.Entities.Servicio
+
+@{
+    ViewData["Title"] = "Editar Servicio";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2>Editar Servicio</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Editar" method="post">
+        <input type="hidden" name="ServicioId" value="@Model.ServicioId" />
+
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" name="Nombre" class="form-control" value="@Model.Nombre" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="Descripcion" class="form-control" rows="3">@Model.Descripcion</textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Duración (minutos)</label>
+            <input type="number" name="DuracionMinutos" class="form-control" value="@Model.DuracionMinutos" min="1" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Precio (RD$)</label>
+            <input type="number" name="Precio" class="form-control" value="@Model.Precio" step="0.01" min="0" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

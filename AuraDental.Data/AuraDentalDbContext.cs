@@ -20,7 +20,7 @@ namespace AuraDental.Data
         public DbSet<Provincia> Provincias { get; set; }
 
         public DbSet<Servicio> Servicios { get; set; }
-
+        public DbSet<BloqueAgenda> BloquesAgenda { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -53,6 +53,12 @@ namespace AuraDental.Data
             modelBuilder.Entity<Servicio>()
                 .Property(s => s.Precio)
                 .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<BloqueAgenda>()
+                .HasOne(b => b.Usuario)
+                .WithMany()
+                .HasForeignKey(b => b.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Usuario>().HasData(
                 new Usuario
