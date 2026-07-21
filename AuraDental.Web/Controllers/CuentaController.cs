@@ -82,5 +82,32 @@ namespace AuraDental.Web.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
+
+        [HttpGet]
+        public IActionResult CambiarPassword()
+        {
+            if (HttpContext.Session.GetInt32("UsuarioId") == null)
+                return RedirectToAction("Login");
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CambiarPassword(string passwordActual, string passwordNueva)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null)
+                return RedirectToAction("Login");
+
+            var (exito, mensaje) = _authService.CambiarPassword(usuarioId.Value, passwordActual, passwordNueva);
+            if (!exito)
+            {
+                ViewBag.Error = mensaje;
+                return View();
+            }
+
+            ViewBag.Exito = mensaje;
+            return View();
+        }
     }
 }

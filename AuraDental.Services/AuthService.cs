@@ -53,5 +53,23 @@ namespace AuraDental.Services
 
             return passwordValida ? usuario : null;
         }
+
+        public (bool exito, string mensaje) CambiarPassword(int usuarioId, string passwordActual, string passwordNueva)
+        {
+            var usuario = _context.Usuarios.Find(usuarioId);
+            if (usuario == null)
+                return (false, "Usuario no encontrado.");
+
+            if (!BCrypt.Net.BCrypt.Verify(passwordActual, usuario.PasswordHash))
+                return (false, "La contraseña actual no es correcta.");
+
+            if (passwordNueva.Length < 6)
+                return (false, "La nueva contraseña debe tener al menos 6 caracteres.");
+
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(passwordNueva);
+            _context.SaveChanges();
+
+            return (true, "Contraseña actualizada correctamente.");
+        }
     }
 }
