@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddScoped<IPersonalService, PersonalService>();
 
 // Registro del DbContext con la cadena de conexión
@@ -15,9 +14,9 @@ builder.Services.AddDbContext<AuraDentalDbContext>(options =>
 
 // Registro del servicio de autenticación
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<IServicioService, ServicioService>();
 builder.Services.AddScoped<IAgendaService, AgendaService>();
+builder.Services.AddScoped<ICitaService, CitaService>();
 
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>

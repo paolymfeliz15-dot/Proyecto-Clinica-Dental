@@ -1,0 +1,70 @@
+﻿@model List<AuraDental.Data.Entities.Cita>
+
+@{
+    ViewData["Title"] = "Mis Citas";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mis Citas</h2>
+        <a asp-controller="PacienteDashboard" asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        var esExito = (bool)TempData["Exito"]!;
+        <div class="alert @(esExito ? "alert-success" : "alert-danger")">@TempData["Mensaje"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Todavía no tienes citas agendadas.</p>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cita in Model)
+                {
+                    <tr>
+                        <td>@cita.Servicio.Nombre</td>
+                        <td>@cita.BloqueAgenda.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@cita.BloqueAgenda.HoraInicio.ToString(@"hh\:mm")</td>
+                        <td>
+                            @if (cita.Estado == "Agendada")
+                            {
+                                <span class="badge bg-primary">Agendada</span>
+                            }
+                            else if (cita.Estado == "Cancelada")
+                            {
+                                <span class="badge bg-secondary">Cancelada</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Completada</span>
+                            }
+                        </td>
+                        <td>
+                            @if (cita.Estado == "Agendada" && cita.BloqueAgenda.Fecha >= DateTime.Today)
+                            {
+                                <form asp-action="Cancelar" method="post" class="d-inline" onsubmit="return confirm('¿Cancelar esta cita?');">
+                                    <input type="hidden" name="id" value="@cita.CitaId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancelar</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
