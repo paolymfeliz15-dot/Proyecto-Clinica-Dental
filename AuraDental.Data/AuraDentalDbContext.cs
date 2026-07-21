@@ -18,9 +18,9 @@ namespace AuraDental.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Provincia> Provincias { get; set; }
-
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<BloqueAgenda> BloquesAgenda { get; set; }
+        public DbSet<Cita> Citas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -58,6 +58,24 @@ namespace AuraDental.Data
                 .HasOne(b => b.Usuario)
                 .WithMany()
                 .HasForeignKey(b => b.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Paciente)
+                .WithMany()
+                .HasForeignKey(c => c.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Servicio)
+                .WithMany()
+                .HasForeignKey(c => c.ServicioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.BloqueAgenda)
+                .WithMany()
+                .HasForeignKey(c => c.BloqueAgendaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Usuario>().HasData(
