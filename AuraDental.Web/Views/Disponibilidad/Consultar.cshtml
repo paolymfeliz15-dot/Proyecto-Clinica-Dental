@@ -1,0 +1,42 @@
+﻿@model List<AuraDental.Data.Entities.BloqueAgenda>
+
+@{
+    ViewData["Title"] = "Horarios Disponibles";
+    var servicio = (AuraDental.Data.Entities.Servicio)ViewBag.Servicio;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-2">Horarios Disponibles</h2>
+    <p class="text-muted mb-4">Servicio: <strong>@servicio.Nombre</strong> (@servicio.DuracionMinutos min — @servicio.Precio.ToString("C"))</p>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No hay horarios disponibles para este servicio en este momento.</p>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bloque in Model)
+                {
+                    <tr>
+                        <td>@bloque.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@bloque.HoraInicio.ToString(@"hh\:mm") - @bloque.HoraFin.ToString(@"hh\:mm")</td>
+                        <td>
+                            <span class="text-muted">Agendar disponible próximamente (HU-03)</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <a asp-action="Index" class="btn btn-link">← Elegir otro servicio</a>
+</div>

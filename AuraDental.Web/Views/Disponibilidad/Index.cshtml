@@ -1,0 +1,27 @@
+﻿@model List<AuraDental.Data.Entities.Servicio>
+
+@{
+    ViewData["Title"] = "Consultar Disponibilidad";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Consultar Disponibilidad</h2>
+    <p class="text-muted">Elige el servicio que necesitas para ver los horarios disponibles.</p>
+
+    <div class="row g-3">
+        @foreach (var servicio in Model)
+        {
+            <div class="col-md-4">
+                <a asp-action="Consultar" asp-route-servicioId="@servicio.ServicioId" class="text-decoration-none">
+                    <div class="card p-3">
+                        <h5>@servicio.Nombre</h5>
+                        <p class="text-muted mb-1">@servicio.DuracionMinutos minutos</p>
+                        <p class="mb-0">@servicio.Precio.ToString("C")</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <a asp-controller="PacienteDashboard" asp-action="Index" class="btn btn-link mt-4">← Volver al panel</a>
+</div>
