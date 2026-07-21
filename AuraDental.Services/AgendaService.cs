@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using AuraDental.Data;
 using AuraDental.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +33,22 @@ namespace AuraDental.Services
                 .Include(b => b.Usuario)
                 .Where(b => b.Fecha.Date == fecha.Date)
                 .OrderBy(b => b.HoraInicio)
+                .ToList();
+        }
+
+        public List<BloqueAgenda> ObtenerDisponiblesPorServicio(int servicioId)
+        {
+            var servicio = _context.Servicios.Find(servicioId);
+            if (servicio == null) return new List<BloqueAgenda>();
+
+            // Solo bloques disponibles, futuros, y con duración suficiente para el servicio elegido
+            return _context.BloquesAgenda
+                .Include(b => b.Usuario)
+                .Where(b => b.Disponible
+                         && b.Fecha >= DateTime.Today
+                         && (b.HoraFin - b.HoraInicio).TotalMinutes >= servicio.DuracionMinutos)
+                .OrderBy(b => b.Fecha)
+                .ThenBy(b => b.HoraInicio)
                 .ToList();
         }
 
