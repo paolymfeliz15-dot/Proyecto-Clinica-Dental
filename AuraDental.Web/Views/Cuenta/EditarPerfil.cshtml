@@ -1,0 +1,30 @@
+﻿@model AuraDental.Data.Entities.Usuario
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+<div class="container mt-5" style="max-width: 400px;">
+    <h2 class="text-center mb-4">Editar Perfil</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    @if (ViewBag.Exito != null)
+    {
+        <div class="alert alert-success">@ViewBag.Exito</div>
+    }
+
+    <form method="post" asp-action="EditarPerfil">
+        <div class="mb-3">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" name="nombreCompleto" class="form-control" value="@Model.NombreCompleto" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" name="email" class="form-control" value="@Model.Email" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+    </form>
+</div>

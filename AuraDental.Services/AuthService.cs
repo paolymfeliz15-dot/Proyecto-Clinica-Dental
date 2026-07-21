@@ -71,5 +71,23 @@ namespace AuraDental.Services
 
             return (true, "Contraseña actualizada correctamente.");
         }
+        public (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email)
+        {
+            var usuario = _context.Usuarios.Find(usuarioId);
+            if (usuario == null)
+                return (false, "Usuario no encontrado.");
+
+            bool correoEnUso = _context.Usuarios
+                .Any(u => u.Email == email && u.UsuarioId != usuarioId);
+
+            if (correoEnUso)
+                return (false, "Ese correo ya lo está usando otra cuenta.");
+
+            usuario.NombreCompleto = nombreCompleto;
+            usuario.Email = email;
+            _context.SaveChanges();
+
+            return (true, "Perfil actualizado correctamente.");
+        }
     }
 }

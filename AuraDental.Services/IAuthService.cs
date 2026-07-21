@@ -13,5 +13,6 @@ namespace AuraDental.Services
         Usuario RegistrarUsuario(string nombreCompleto, string email, string password, int rolId);
         bool ExisteEmail(string email);
         (bool exito, string mensaje) CambiarPassword(int usuarioId, string passwordActual, string passwordNueva);
+        (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email);
     }
 }

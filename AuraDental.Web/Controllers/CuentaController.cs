@@ -109,5 +109,44 @@ namespace AuraDental.Web.Controllers
             ViewBag.Exito = mensaje;
             return View();
         }
+
+        [HttpGet]
+        public IActionResult EditarPerfil()
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null)
+                return RedirectToAction("Login");
+
+            var usuario = _context.Usuarios.Find(usuarioId.Value);
+            if (usuario == null)
+                return RedirectToAction("Login");
+
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public IActionResult EditarPerfil(string nombreCompleto, string email)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null)
+                return RedirectToAction("Login");
+
+            var (exito, mensaje) = _authService.ActualizarPerfil(usuarioId.Value, nombreCompleto, email);
+
+            if (!exito)
+            {
+                ViewBag.Error = mensaje;
+                var usuario = _context.Usuarios.Find(usuarioId.Value);
+                return View(usuario);
+            }
+
+            // Actualizamos también el nombre guardado en la sesión,
+            // para que se refleje de inmediato en el panel sin tener que reloguear
+            HttpContext.Session.SetString("NombreCompleto", nombreCompleto);
+
+            ViewBag.Exito = mensaje;
+            var usuarioActualizado = _context.Usuarios.Find(usuarioId.Value);
+            return View(usuarioActualizado);
+        }
     }
 }
