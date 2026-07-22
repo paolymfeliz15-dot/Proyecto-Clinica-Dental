@@ -34,5 +34,19 @@ namespace AuraDental.Web.Controllers
 
             return RedirectToAction("Index");
         }
+        // POST: /Citas/Agendar
+        [HttpPost]
+        public IActionResult Agendar(int servicioId, int bloqueAgendaId)
+        {
+            var pacienteId = HttpContext.Session.GetInt32("UsuarioId")!.Value;
+            var (exito, mensaje) = _citaService.Agendar(pacienteId, servicioId, bloqueAgendaId);
+
+            TempData["Mensaje"] = mensaje;
+            TempData["Exito"] = exito;
+
+            return exito
+                ? RedirectToAction("Index") // lo mandamos a "Mis Citas" para que vea la confirmación
+                : RedirectToAction("Consultar", "Disponibilidad", new { servicioId });
+        }
     }
 }

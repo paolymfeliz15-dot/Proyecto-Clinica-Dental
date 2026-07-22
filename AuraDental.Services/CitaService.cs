@@ -63,5 +63,41 @@ namespace AuraDental.Services
 
             return (true, "Cita cancelada correctamente.");
         }
+        public (bool exito, string mensaje) Agendar(int pacienteId, int servicioId, int bloqueAgendaId)
+        {
+            var servicio = _context.Servicios.Find(servicioId);
+            if (servicio == null || !servicio.Activo)
+                return (false, "El servicio seleccionado no está disponible.");
+
+            var bloque = _context.BloquesAgenda.Find(bloqueAgendaId);
+            if (bloque == null)
+                return (false, "El horario seleccionado no existe.");
+
+            if (!bloque.Disponible)
+                return (false, "Ese horario ya no está disponible. Por favor elige otro.");
+
+            if (bloque.Fecha < DateTime.Today)
+                return (false, "No se puede agendar en una fecha pasada.");
+
+            // Doble verificación de duración (por si el paciente manipula la URL/formulario)
+            if ((bloque.HoraFin - bloque.HoraInicio).TotalMinutes < servicio.DuracionMinutos)
+                return (false, "Ese horario no tiene duración suficiente para el servicio seleccionado.");
+
+            var cita = new Cita
+            {
+                PacienteId = pacienteId,
+                ServicioId = servicioId,
+                BloqueAgendaId = bloqueAgendaId,
+                Estado = "Agendada",
+                FechaCreacion = DateTime.Now
+            };
+
+            bloque.Disponible = false; // se ocupa el bloque al agendar
+
+            _context.Citas.Add(cita);
+            _context.SaveChanges();
+
+            return (true, "Cita agendada correctamente.");
+        }
     }
 }

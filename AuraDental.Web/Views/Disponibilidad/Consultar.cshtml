@@ -30,7 +30,11 @@
                         <td>@bloque.Fecha.ToString("dd/MM/yyyy")</td>
                         <td>@bloque.HoraInicio.ToString(@"hh\:mm") - @bloque.HoraFin.ToString(@"hh\:mm")</td>
                         <td>
-                            <span class="text-muted">Agendar disponible próximamente (HU-03)</span>
+                            <form asp-controller="Citas" asp-action="Agendar" method="post" class="d-inline" onsubmit="return confirm('¿Confirmar esta cita?');">
+                                <input type="hidden" name="servicioId" value="@servicio.ServicioId" />
+                                <input type="hidden" name="bloqueAgendaId" value="@bloque.BloqueAgendaId" />
+                                <button type="submit" class="btn btn-sm btn-success">Agendar</button>
+                            </form>
                         </td>
                     </tr>
                 }
