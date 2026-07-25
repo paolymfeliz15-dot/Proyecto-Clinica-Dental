@@ -1,13 +1,75 @@
-﻿@{
+﻿@model List<AuraDental.Data.Entities.Servicio>
+
+@{
     ViewData["Title"] = "Bienvenido";
 }
 
-<div class="container mt-5 text-center">
-    <h1 class="mb-3">AuraDental</h1>
-    <p class="text-muted mb-4">Sistema de Gestión Clínica Dental</p>
+<div class="text-center py-5">
+    <h1 class="mb-3">Bienvenido a AuraDental</h1>
+    <p class="lead text-muted mb-4">
+        Cuidamos tu sonrisa con tecnología moderna y atención personalizada.
+        Agenda tu cita en minutos y déjanos el resto.
+    </p>
 
-    <div class="d-flex justify-content-center gap-3">
+    <div class="d-flex justify-content-center gap-3 mb-3">
         <a asp-controller="Cuenta" asp-action="Login" class="btn btn-primary btn-lg">Iniciar Sesión</a>
         <a asp-controller="Cuenta" asp-action="Registro" class="btn btn-outline-primary btn-lg">Registrarme</a>
     </div>
+
+    <a asp-controller="Home" asp-action="PoliticaPrivacidad" class="text-muted small">
+        Política de Privacidad
+    </a>
 </div>
+
+<div class="row g-4 mt-4">
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <h5>Nuestra Misión</h5>
+            <p class="text-muted mb-0">
+                Brindar atención odontológica de calidad, accesible y humana,
+                combinando la experiencia de nuestro equipo con herramientas digitales
+                que simplifican cada visita.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <h5>Nuestra Visión</h5>
+            <p class="text-muted mb-0">
+                Ser la clínica dental de referencia en la región, reconocida por
+                la confianza de nuestros pacientes y la excelencia de nuestro servicio.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <h5>Nuestros Valores</h5>
+            <p class="text-muted mb-0">
+                Empatía, honestidad y mejora continua guían cada decisión clínica
+                y cada interacción con nuestros pacientes.
+            </p>
+        </div>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="mt-5">
+        <h3 class="text-center mb-4">Algunos de Nuestros Servicios</h3>
+        <div class="row g-3">
+            @foreach (var servicio in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card p-3 h-100">
+                        <h5>@servicio.Nombre</h5>
+                        <p class="text-muted small">@servicio.Descripcion</p>
+                        <p class="mb-0 fw-bold">@servicio.Precio.ToString("C")</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <p class="text-center text-muted mt-3 small">
+            Regístrate para ver el catálogo completo y agendar tu cita.
+        </p>
+    </div>
+}
