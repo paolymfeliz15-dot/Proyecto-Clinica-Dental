@@ -1,82 +1,82 @@
-﻿/* ===== AuraDental — Design Tokens ===== */
+﻿/* ===== AuraDental — Design Tokens v2 (Rediseño Visual - HU-23) ===== */
 :root {
     --aura-teal-900: #0B4A42;
-    --aura-teal-700: #0F6E63;
-    --aura-teal-500: #16A08D;
-    --aura-teal-100: #E3F3F0;
+    --aura-teal-700: #14786C;
+    --aura-teal-500: #2FA894;
+    --aura-teal-200: #C9E7E1;
+    --aura-teal-100: #EEF7F5;
     --aura-amber-500: #E8A33D;
     --aura-amber-600: #D48F28;
-    --aura-ink: #1F2A2E;
-    --aura-muted: #5C6B6E;
-    --aura-bg: #F7FAF9;
+    --aura-ink: #2B3538;
+    --aura-muted: #75868A;
+    --aura-bg: #FAFAF8;
     --aura-surface: #FFFFFF;
-    --aura-border: #E2ECEA;
+    --aura-border: #EAEFEE;
     --aura-danger: #C0392B;
-    --aura-radius: 12px;
+    --aura-radius: 16px;
+    --aura-radius-sm: 10px;
 }
 
 body {
     font-family: 'Inter', -apple-system, sans-serif;
     background-color: var(--aura-bg);
     color: var(--aura-ink);
+    line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: 'Poppins', 'Inter', sans-serif;
     font-weight: 600;
     color: var(--aura-teal-900);
+    letter-spacing: -0.01em;
 }
 
-/* ===== Navbar ===== */
+.container {
+    padding-top: 0.5rem;
+    padding-bottom: 1.5rem;
+}
+
+/* ===== Navbar — plano, sin gradiente fuerte ===== */
 .aura-navbar {
-    background: linear-gradient(135deg, var(--aura-teal-700), var(--aura-teal-900));
-    padding: 0.85rem 0;
-    position: relative;
+    background: var(--aura-teal-700);
+    padding: 1rem 0;
 }
-
-    .aura-navbar::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -14px;
-        height: 14px;
-        background: var(--aura-teal-700);
-        -webkit-mask: radial-gradient(circle at 12px -2px, transparent 14px, black 15px) repeat-x;
-        mask: radial-gradient(circle at 12px -2px, transparent 14px, black 15px) repeat-x;
-        -webkit-mask-size: 28px 16px;
-        mask-size: 28px 16px;
-        opacity: 0.55;
-    }
 
     .aura-navbar .navbar-brand {
         color: #FFFFFF !important;
-        font-weight: 700;
-        font-size: 1.35rem;
+        font-weight: 600;
+        font-size: 1.25rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
 
     .aura-navbar .nav-link {
-        color: rgba(255,255,255,0.85) !important;
+        color: rgba(255,255,255,0.82) !important;
         font-weight: 500;
-        padding: 0.4rem 0.9rem !important;
-        border-radius: 8px;
+        padding: 0.4rem 0.85rem !important;
+        border-radius: 20px;
         transition: background 0.15s ease, color 0.15s ease;
+        font-size: 0.94rem;
     }
 
         .aura-navbar .nav-link:hover {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.10);
             color: #FFFFFF !important;
         }
 
         .aura-navbar .nav-link.active {
-            background: rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.16);
             color: #FFFFFF !important;
         }
 
-/* ===== Buttons ===== */
+/* ===== Buttons — más suaves, menos saturados ===== */
+.btn {
+    border-radius: var(--aura-radius-sm);
+    font-weight: 500;
+    padding: 0.5rem 1.1rem;
+}
+
 .btn-primary {
     background-color: var(--aura-teal-700);
     border-color: var(--aura-teal-700);
@@ -102,68 +102,139 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 
 .btn-outline-primary {
     color: var(--aura-teal-700);
-    border-color: var(--aura-teal-700);
+    border-color: var(--aura-teal-200);
 }
 
     .btn-outline-primary:hover {
-        background-color: var(--aura-teal-700);
-        border-color: var(--aura-teal-700);
+        background-color: var(--aura-teal-100);
+        border-color: var(--aura-teal-500);
+        color: var(--aura-teal-900);
     }
 
-/* ===== Cards ===== */
+.btn-outline-danger {
+    border-color: #F1D4D0;
+    color: var(--aura-danger);
+}
+
+    .btn-outline-danger:hover {
+        background-color: #FBEEEC;
+        border-color: var(--aura-danger);
+        color: var(--aura-danger);
+    }
+
+.btn-outline-secondary {
+    border-color: var(--aura-border);
+    color: var(--aura-muted);
+}
+
+/* ===== Cards — sombra casi imperceptible ===== */
 .card {
     border: 1px solid var(--aura-border);
     border-radius: var(--aura-radius);
-    box-shadow: 0 2px 10px rgba(11, 74, 66, 0.06);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 3px rgba(11, 74, 66, 0.04);
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 a .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(11, 74, 66, 0.12);
-    border-color: var(--aura-teal-500);
+    box-shadow: 0 4px 16px rgba(11, 74, 66, 0.08);
+    border-color: var(--aura-teal-200);
 }
 
-/* ===== Badges ===== */
-.badge.bg-success {
-    background-color: var(--aura-teal-500) !important;
+/* ===== Badges — más suaves, tipo "pill" con fondo claro ===== */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
 }
 
-.badge.bg-primary {
-    background-color: var(--aura-teal-700) !important;
-}
-
-.badge.bg-warning {
-    background-color: var(--aura-amber-500) !important;
-    color: var(--aura-ink) !important;
-}
-
-/* ===== Tables ===== */
-.table thead {
-    background-color: var(--aura-teal-100);
-}
-
-    .table thead th {
-        color: var(--aura-teal-900);
-        font-weight: 600;
-        border-bottom: 2px solid var(--aura-teal-500);
+    .badge.bg-success {
+        background-color: var(--aura-teal-100) !important;
+        color: var(--aura-teal-900) !important;
     }
 
-/* ===== Footer ===== */
+    .badge.bg-primary {
+        background-color: var(--aura-teal-100) !important;
+        color: var(--aura-teal-700) !important;
+    }
+
+    .badge.bg-warning {
+        background-color: #FBF0DE !important;
+        color: #8A6316 !important;
+    }
+
+    .badge.bg-secondary {
+        background-color: #F1F3F2 !important;
+        color: var(--aura-muted) !important;
+    }
+
+/* ===== Tables — encabezado discreto ===== */
+.table {
+    border-radius: var(--aura-radius-sm);
+    overflow: hidden;
+}
+
+    .table thead {
+        background-color: transparent;
+    }
+
+        .table thead th {
+            color: var(--aura-muted);
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom: 1px solid var(--aura-border);
+            border-top: none;
+        }
+
+    .table td {
+        border-color: var(--aura-border);
+        vertical-align: middle;
+    }
+
+/* ===== Footer — más liviano ===== */
 .aura-footer {
-    background-color: var(--aura-teal-900);
-    color: rgba(255,255,255,0.75);
-    padding: 1.5rem 0;
+    background-color: var(--aura-teal-100);
+    color: var(--aura-teal-900);
+    padding: 1.25rem 0;
     margin-top: 3rem;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
     .aura-footer a {
-        color: rgba(255,255,255,0.9);
+        color: var(--aura-teal-700);
     }
 
 /* ===== Forms ===== */
-.form-control:focus, .form-select:focus {
-    border-color: var(--aura-teal-500);
-    box-shadow: 0 0 0 0.2rem rgba(22, 160, 141, 0.18);
+.form-control, .form-select {
+    border-radius: var(--aura-radius-sm);
+    border-color: var(--aura-border);
+    padding: 0.55rem 0.85rem;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--aura-teal-500);
+        box-shadow: 0 0 0 0.15rem rgba(47, 168, 148, 0.15);
+    }
+
+.form-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--aura-ink);
+}
+
+/* ===== Alerts — más suaves ===== */
+.alert {
+    border-radius: var(--aura-radius-sm);
+    border: none;
+}
+
+.alert-success {
+    background-color: var(--aura-teal-100);
+    color: var(--aura-teal-900);
+}
+
+.alert-danger {
+    background-color: #FBEEEC;
+    color: #8A2E22;
 }
