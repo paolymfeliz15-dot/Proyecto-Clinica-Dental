@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using AuraDental.Services;
 using AuraDental.Data;
+using AuraDental.Data.Entities;
 
 namespace AuraDental.Web.Controllers
 {
@@ -57,22 +58,21 @@ namespace AuraDental.Web.Controllers
         [HttpGet]
         public IActionResult Registro()
         {
-            // Se elimina la carga de la lista de roles en ViewBag ya que el registro es público
+            ViewBag.Provincias = _context.Provincias.Where(p => p.Activa).OrderBy(p => p.Nombre).ToList();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Registro(string nombreCompleto, string email, string password)
+        public IActionResult Registro(Usuario datosUsuario, string password)
         {
-            if (_authService.ExisteEmail(email))
-            {
-                ViewBag.Error = "Ese correo ya está registrado.";
-                return View();
-            }
+            var (exito, mensaje) = _authService.RegistrarPaciente(datosUsuario, password);
 
-            // Todo registro público es forzosamente Paciente (RolId = 2).
-            // Administradores y Asistentes solo los crea un Administrador desde /Personal/Crear.
-            _authService.RegistrarUsuario(nombreCompleto, email, password, rolId: 2);
+            if (!exito)
+            {
+                ViewBag.Error = mensaje;
+                ViewBag.Provincias = _context.Provincias.Where(p => p.Activa).OrderBy(p => p.Nombre).ToList();
+                return View(datosUsuario);
+            }
 
             return RedirectToAction("Login");
         }

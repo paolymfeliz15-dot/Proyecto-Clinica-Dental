@@ -1,8 +1,10 @@
-﻿@{
+﻿@model AuraDental.Data.Entities.Usuario
+
+@{
     ViewData["Title"] = "Registro";
 }
 
-<div class="container mt-5" style="max-width: 400px;">
+<div class="container mt-5" style="max-width: 600px;">
     <h2 class="text-center mb-4">AuraDental</h2>
     <h4 class="text-center mb-4">Crear Cuenta</h4>
 
@@ -12,19 +14,57 @@
     }
 
     <form method="post" asp-action="Registro">
-        <div class="mb-3">
-            <label class="form-label">Nombre completo</label>
-            <input type="text" name="nombreCompleto" class="form-control" required />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nombres</label>
+                <input type="text" name="NombreCompleto" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Apellidos</label>
+                <input type="text" name="Apellidos" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Número de cédula</label>
+                <input type="text" name="Cedula" class="form-control" placeholder="000-0000000-0" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" name="Telefono" class="form-control" placeholder="(809) 000-0000" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" name="Email" class="form-control" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Dirección</label>
+                <input type="text" name="Direccion" class="form-control" required />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">País</label>
+                <input type="text" name="Pais" class="form-control" placeholder="República Dominicana" required />
+                <small class="text-muted">*Se convertirá en lista desplegable con HU-22</small>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Provincia</label>
+                <select name="ProvinciaId" class="form-select" required>
+                    <option value="">Selecciona...</option>
+                    @foreach (var provincia in ViewBag.Provincias)
+                    {
+                        <option value="@provincia.ProvinciaId">@provincia.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Sector</label>
+                <input type="text" name="Sector" class="form-control" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="password" class="form-control" required />
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Correo electrónico</label>
-            <input type="email" name="email" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input type="password" name="password" class="form-control" required />
-        </div>
-        <button type="submit" class="btn btn-success w-100">Registrarme</button>
+
+        <button type="submit" class="btn btn-success w-100 mt-4">Registrarme</button>
     </form>
 
     <p class="text-center mt-3">

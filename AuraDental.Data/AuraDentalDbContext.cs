@@ -78,6 +78,17 @@ namespace AuraDental.Data
                 .HasForeignKey(c => c.BloqueAgendaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Cedula)
+                .IsUnique()
+                .HasFilter("[Cedula] IS NOT NULL"); // permite múltiples NULL (personal sin cédula registrada)
+
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Provincia)
+                .WithMany()
+                .HasForeignKey(u => u.ProvinciaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Usuario>().HasData(
                 new Usuario
                 {

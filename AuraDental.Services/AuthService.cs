@@ -40,6 +40,26 @@ namespace AuraDental.Services
             return usuario;
         }
 
+        public (bool exito, string mensaje) RegistrarPaciente(Usuario datosUsuario, string password)
+        {
+            if (ExisteEmail(datosUsuario.Email))
+                return (false, "Ese correo ya está registrado.");
+
+            if (!string.IsNullOrWhiteSpace(datosUsuario.Cedula) &&
+                _context.Usuarios.Any(u => u.Cedula == datosUsuario.Cedula))
+                return (false, "Ya existe una cuenta registrada con esa cédula.");
+
+            datosUsuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            datosUsuario.RolId = 2; // Paciente, siempre fijo
+            datosUsuario.Activo = true;
+            datosUsuario.FechaCreacion = DateTime.Now;
+
+            _context.Usuarios.Add(datosUsuario);
+            _context.SaveChanges();
+
+            return (true, "Registro exitoso.");
+        }
+
         public Usuario? ValidarCredenciales(string email, string password)
         {
             var usuario = _context.Usuarios
@@ -71,6 +91,7 @@ namespace AuraDental.Services
 
             return (true, "Contraseña actualizada correctamente.");
         }
+
         public (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email)
         {
             var usuario = _context.Usuarios.Find(usuarioId);
