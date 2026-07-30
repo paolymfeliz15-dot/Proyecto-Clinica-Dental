@@ -12,11 +12,13 @@ namespace AuraDental.Web.Controllers
     {
         private readonly IPersonalService _personalService;
         private readonly AuraDentalDbContext _context;
+        private readonly IPaisService _paisService;
 
-        public PersonalController(IPersonalService personalService, AuraDentalDbContext context)
+        public PersonalController(IPersonalService personalService, AuraDentalDbContext context, IPaisService paisService)
         {
             _personalService = personalService;
             _context = context;
+            _paisService = paisService;
         }
 
         // GET: /Personal
@@ -36,9 +38,10 @@ namespace AuraDental.Web.Controllers
         }
 
         // GET: /Personal/Crear
-        public IActionResult Crear()
+        public async Task<IActionResult> Crear()
         {
             CargarRolesPersonal();
+            ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
             return View();
         }
 
@@ -58,12 +61,24 @@ namespace AuraDental.Web.Controllers
         }
 
         // GET: /Personal/Editar/5
-        public IActionResult Editar(int id)
+        public async Task<IActionResult> Editar(int id)
         {
             var usuario = _personalService.ObtenerPorId(id);
             if (usuario == null) return NotFound();
 
             CargarRolesPersonal();
+            ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
+
+            if (!string.IsNullOrWhiteSpace(usuario.Pais))
+                ViewBag.EstadosActuales = await _paisService.ObtenerEstadosAsync(usuario.Pais);
+            else
+                ViewBag.EstadosActuales = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(usuario.Pais) && !string.IsNullOrWhiteSpace(usuario.EstadoProvincia))
+                ViewBag.CiudadesActuales = await _paisService.ObtenerCiudadesAsync(usuario.Pais, usuario.EstadoProvincia);
+            else
+                ViewBag.CiudadesActuales = new List<string>();
+
             return View(usuario);
         }
 

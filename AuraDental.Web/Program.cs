@@ -17,6 +17,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
 builder.Services.AddScoped<IAgendaService, AgendaService>();
 builder.Services.AddScoped<ICitaService, CitaService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient<IPaisService, PaisService>();
 
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>

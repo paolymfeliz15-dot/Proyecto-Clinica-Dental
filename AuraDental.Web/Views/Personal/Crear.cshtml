@@ -4,7 +4,7 @@
     ViewData["Title"] = "Nuevo Personal";
 }
 
-<div class="container mt-4" style="max-width: 500px;">
+<div class="container mt-4" style="max-width: 650px;">
     <h2>Nuevo Personal</h2>
 
     @if (ViewBag.Error != null)
@@ -13,28 +13,86 @@
     }
 
     <form asp-action="Crear" method="post">
-        <div class="mb-3">
-            <label class="form-label">Nombre completo</label>
-            <input type="text" name="NombreCompleto" class="form-control" required />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nombres</label>
+                <input type="text" name="NombreCompleto" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Apellidos</label>
+                <input type="text" name="Apellidos" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Cédula</label>
+                <input type="text" name="Cedula" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" name="Telefono" class="form-control" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" name="Email" class="form-control" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Dirección</label>
+                <input type="text" name="Direccion" class="form-control" required />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">País</label>
+                <select id="PersonalPais" name="Pais" class="form-select" required>
+                    <option value="">Selecciona...</option>
+                    @foreach (var pais in (List<string>)ViewBag.Paises)
+                    {
+                        <option value="@pais">@pais</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Estado / Provincia</label>
+                <select id="PersonalEstadoProvincia" name="EstadoProvincia" class="form-select" required>
+                    <option value="">Selecciona un país primero</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Ciudad</label>
+                <select id="PersonalCiudad" name="Ciudad" class="form-select" required>
+                    <option value="">Selecciona un estado primero</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Sector</label>
+                <input type="text" name="Sector" class="form-control" required />
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Contraseña</label>
+                <div class="input-group">
+                    <input type="password" id="PersonalPassword" name="password" class="form-control" required />
+                    <button type="button" class="btn btn-outline-secondary aura-toggle-password" data-target="PersonalPassword">👁</button>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Rol</label>
+                <select name="RolId" class="form-select" required>
+                    @foreach (var rol in ViewBag.Roles)
+                    {
+                        <option value="@rol.RolId">@rol.Nombre</option>
+                    }
+                </select>
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Correo electrónico</label>
-            <input type="email" name="Email" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Contraseña</label>
-            <input type="password" name="password" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Rol</label>
-            <select name="RolId" class="form-select" required>
-                @foreach (var rol in ViewBag.Roles)
-                {
-                    <option value="@rol.RolId">@rol.Nombre</option>
-                }
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+
+        <button type="submit" class="btn btn-primary mt-4">Guardar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary mt-4">Cancelar</a>
     </form>
 </div>
+
+@section Scripts {
+    <script src="~/js/aura-formularios.js"></script>
+    <script>
+        initCascadaUbicacion('Personal');
+    </script>
+}

@@ -2,9 +2,12 @@
 
 @{
     ViewData["Title"] = "Editar Personal";
+    var paisesDisponibles = ViewBag.Paises as List<string> ?? new List<string>();
+    var estadosActuales = ViewBag.EstadosActuales as List<string> ?? new List<string>();
+    var ciudadesActuales = ViewBag.CiudadesActuales as List<string> ?? new List<string>();
 }
 
-<div class="container mt-4" style="max-width: 500px;">
+<div class="container mt-4" style="max-width: 650px;">
     <h2>Editar Personal</h2>
 
     @if (ViewBag.Error != null)
@@ -15,24 +18,108 @@
     <form asp-action="Editar" method="post">
         <input type="hidden" name="UsuarioId" value="@Model.UsuarioId" />
 
-        <div class="mb-3">
-            <label class="form-label">Nombre completo</label>
-            <input type="text" name="NombreCompleto" class="form-control" value="@Model.NombreCompleto" required />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nombres</label>
+                <input type="text" name="NombreCompleto" class="form-control" value="@Model.NombreCompleto" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Apellidos</label>
+                <input type="text" name="Apellidos" class="form-control" value="@Model.Apellidos" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Cédula</label>
+                <input type="text" name="Cedula" class="form-control" value="@Model.Cedula" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" name="Telefono" class="form-control" value="@Model.Telefono" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Dirección</label>
+                <input type="text" name="Direccion" class="form-control" value="@Model.Direccion" required />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">País</label>
+                <select id="PersonalPais" name="Pais" class="form-select" required>
+                    <option value="">Selecciona...</option>
+                    @foreach (var pais in paisesDisponibles)
+                    {
+                        @if (pais == Model.Pais)
+                        {
+                            <option value="@pais" selected>@pais</option>
+                        }
+                        else
+                        {
+                            <option value="@pais">@pais</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Estado / Provincia</label>
+                <select id="PersonalEstadoProvincia" name="EstadoProvincia" class="form-select" required>
+                    <option value="">Selecciona...</option>
+                    @foreach (var estado in estadosActuales)
+                    {
+                        @if (estado == Model.EstadoProvincia)
+                        {
+                            <option value="@estado" selected>@estado</option>
+                        }
+                        else
+                        {
+                            <option value="@estado">@estado</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Ciudad</label>
+                <select id="PersonalCiudad" name="Ciudad" class="form-select" required>
+                    <option value="">Selecciona...</option>
+                    @foreach (var ciudad in ciudadesActuales)
+                    {
+                        @if (ciudad == Model.Ciudad)
+                        {
+                            <option value="@ciudad" selected>@ciudad</option>
+                        }
+                        else
+                        {
+                            <option value="@ciudad">@ciudad</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Sector</label>
+                <input type="text" name="Sector" class="form-control" value="@Model.Sector" required />
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Rol</label>
+                <select name="RolId" class="form-select" required>
+                    @foreach (var rol in ViewBag.Roles)
+                    {
+                        <option value="@rol.RolId" selected="@(rol.RolId == Model.RolId)">@rol.Nombre</option>
+                    }
+                </select>
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Correo electrónico</label>
-            <input type="email" name="Email" class="form-control" value="@Model.Email" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Rol</label>
-            <select name="RolId" class="form-select" required>
-                @foreach (var rol in ViewBag.Roles)
-                {
-                    <option value="@rol.RolId" selected="@(rol.RolId == Model.RolId)">@rol.Nombre</option>
-                }
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+
+        <button type="submit" class="btn btn-primary mt-4">Guardar cambios</button>
+        <a asp-action="Index" class="btn btn-outline-secondary mt-4">Cancelar</a>
     </form>
 </div>
+
+@section Scripts {
+    <script src="~/js/aura-formularios.js"></script>
+    <script>
+        initCascadaUbicacion('Personal');
+    </script>
+}

@@ -11,11 +11,13 @@ namespace AuraDental.Web.Controllers
     {
         private readonly IAuthService _authService;
         private readonly AuraDentalDbContext _context;
+        private readonly IPaisService _paisService;
 
-        public CuentaController(IAuthService authService, AuraDentalDbContext context)
+        public CuentaController(IAuthService authService, AuraDentalDbContext context, IPaisService paisService)
         {
             _authService = authService;
             _context = context;
+            _paisService = paisService;
         }
 
         [HttpGet]
@@ -56,21 +58,21 @@ namespace AuraDental.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Registro()
+        public async Task<IActionResult> Registro()
         {
-            ViewBag.Provincias = _context.Provincias.Where(p => p.Activa).OrderBy(p => p.Nombre).ToList();
+            ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Registro(Usuario datosUsuario, string password)
+        public async Task<IActionResult> Registro(Usuario datosUsuario, string password)
         {
             var (exito, mensaje) = _authService.RegistrarPaciente(datosUsuario, password);
 
             if (!exito)
             {
                 ViewBag.Error = mensaje;
-                ViewBag.Provincias = _context.Provincias.Where(p => p.Activa).OrderBy(p => p.Nombre).ToList();
+                ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
                 return View(datosUsuario);
             }
 

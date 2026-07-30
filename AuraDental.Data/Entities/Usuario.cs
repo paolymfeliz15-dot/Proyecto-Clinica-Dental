@@ -19,15 +19,14 @@ namespace AuraDental.Data.Entities
         public bool Activo { get; set; } = true;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
-        // ===== Campos ampliados para Pacientes (HU-21) =====
+        // ===== Campos ampliados de perfil (HU-21) =====
         public string? Apellidos { get; set; }
         public string? Telefono { get; set; }
         public string? Cedula { get; set; }
         public string? Direccion { get; set; }
         public string? Pais { get; set; }
+        public string? EstadoProvincia { get; set; } // viene de la API, ya no de la tabla local
+        public string? Ciudad { get; set; }
         public string? Sector { get; set; }
-
-        public int? ProvinciaId { get; set; }
-        public Provincia? Provincia { get; set; }
     }
 }

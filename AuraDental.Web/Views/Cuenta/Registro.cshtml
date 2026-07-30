@@ -4,7 +4,7 @@
     ViewData["Title"] = "Registro";
 }
 
-<div class="container mt-5" style="max-width: 600px;">
+<div class="container mt-5" style="max-width: 650px;">
     <h2 class="text-center mb-4">AuraDental</h2>
     <h4 class="text-center mb-4">Crear Cuenta</h4>
 
@@ -36,31 +36,44 @@
                 <input type="email" name="Email" class="form-control" required />
             </div>
             <div class="col-12">
-                <label class="form-label">Dirección</label>
+                <label class="form-label">Dirección (calle, número)</label>
                 <input type="text" name="Direccion" class="form-control" required />
             </div>
+
             <div class="col-md-4">
                 <label class="form-label">País</label>
-                <input type="text" name="Pais" class="form-control" placeholder="República Dominicana" required />
-                <small class="text-muted">*Se convertirá en lista desplegable con HU-22</small>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Provincia</label>
-                <select name="ProvinciaId" class="form-select" required>
+                <select id="RegistroPais" name="Pais" class="form-select" required>
                     <option value="">Selecciona...</option>
-                    @foreach (var provincia in ViewBag.Provincias)
+                    @foreach (var pais in (List<string>)ViewBag.Paises)
                     {
-                        <option value="@provincia.ProvinciaId">@provincia.Nombre</option>
+                        <option value="@pais">@pais</option>
                     }
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label">Sector</label>
+                <label class="form-label">Estado / Provincia</label>
+                <select id="RegistroEstadoProvincia" name="EstadoProvincia" class="form-select" required>
+                    <option value="">Selecciona un país primero</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Ciudad</label>
+                <select id="RegistroCiudad" name="Ciudad" class="form-select" required>
+                    <option value="">Selecciona un estado primero</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Sector / Barrio</label>
                 <input type="text" name="Sector" class="form-control" required />
             </div>
+
             <div class="col-12">
                 <label class="form-label">Contraseña</label>
-                <input type="password" name="password" class="form-control" required />
+                <div class="input-group">
+                    <input type="password" id="RegistroPassword" name="password" class="form-control" required />
+                    <button type="button" class="btn btn-outline-secondary aura-toggle-password" data-target="RegistroPassword">👁</button>
+                </div>
             </div>
         </div>
 
@@ -71,3 +84,10 @@
         ¿Ya tienes cuenta? <a asp-action="Login">Inicia sesión aquí</a>
     </p>
 </div>
+
+@section Scripts {
+    <script src="~/js/aura-formularios.js"></script>
+    <script>
+        initCascadaUbicacion('Registro');
+    </script>
+}
