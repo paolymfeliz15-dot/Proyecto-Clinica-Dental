@@ -44,6 +44,14 @@ namespace AuraDental.Web.Controllers
                 return View();
             }
 
+            if (!usuario.EmailVerificado)
+            {
+                ViewBag.Error = "Debes verificar tu correo antes de iniciar sesión.";
+                ViewBag.MostrarReenviar = true;
+                ViewBag.EmailPendiente = email;
+                return View();
+            }
+
             // Guardamos los datos clave del usuario en la sesión
             HttpContext.Session.SetInt32("UsuarioId", usuario.UsuarioId);
             HttpContext.Session.SetString("NombreCompleto", usuario.NombreCompleto);
@@ -60,6 +68,22 @@ namespace AuraDental.Web.Controllers
                 "Paciente" => RedirectToAction("Index", "PacienteDashboard"),
                 _ => RedirectToAction("Login")
             };
+        }
+
+        public IActionResult VerificarCorreo(string token)
+        {
+            var (exito, mensaje) = _authService.VerificarCorreo(token);
+            ViewBag.Exito = exito;
+            ViewBag.Mensaje = mensaje;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ReenviarVerificacion(string email)
+        {
+            var (exito, mensaje) = await _authService.ReenviarVerificacionAsync(email);
+            TempData["MensajeReenvio"] = mensaje;
+            return RedirectToAction("Login");
         }
 
         [HttpGet]

@@ -29,5 +29,9 @@ namespace AuraDental.Data.Entities
         public string? Ciudad { get; set; }
         public string? Sector { get; set; }
         public string? FotoPerfilUrl { get; set; }
+
+        public bool EmailVerificado { get; set; } = false;
+        public string? TokenVerificacion { get; set; }
+        public DateTime? TokenExpiracion { get; set; }
     }
 }

@@ -13,13 +13,15 @@ namespace AuraDental.Services
     public class AuthService : IAuthService
     {
         private readonly AuraDentalDbContext _context;
+        private readonly IEmailService _emailService;
 
         private readonly string[] _extensionesPermitidas = { ".jpg", ".jpeg", ".png", ".webp" };
         private const long TamanoMaximoBytes = 3 * 1024 * 1024; // 3 MB
 
-        public AuthService(AuraDentalDbContext context)
+        public AuthService(AuraDentalDbContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         public bool ExisteEmail(string email)
@@ -57,11 +59,57 @@ namespace AuraDental.Services
             datosUsuario.RolId = 2; // Paciente, siempre fijo
             datosUsuario.Activo = true;
             datosUsuario.FechaCreacion = DateTime.Now;
+            datosUsuario.EmailVerificado = false;
+            datosUsuario.TokenVerificacion = Guid.NewGuid().ToString("N");
+            datosUsuario.TokenExpiracion = DateTime.Now.AddHours(24);
 
             _context.Usuarios.Add(datosUsuario);
             _context.SaveChanges();
 
-            return (true, "Registro exitoso.");
+            // Enviamos el correo de forma "fire and forget" controlada:
+            // si falla, no revertimos el registro, solo lo dejamos sin verificar
+            _ = _emailService.EnviarCorreoVerificacionAsync(datosUsuario.Email, datosUsuario.NombreCompleto, datosUsuario.TokenVerificacion);
+
+            return (true, "Registro exitoso. Revisa tu correo para verificar tu cuenta antes de iniciar sesión.");
+        }
+
+        public (bool exito, string mensaje) VerificarCorreo(string token)
+        {
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.TokenVerificacion == token);
+
+            if (usuario == null)
+                return (false, "Enlace de verificación inválido.");
+
+            if (usuario.TokenExpiracion < DateTime.Now)
+                return (false, "El enlace de verificación expiró. Solicita uno nuevo.");
+
+            usuario.EmailVerificado = true;
+            usuario.TokenVerificacion = null;
+            usuario.TokenExpiracion = null;
+            _context.SaveChanges();
+
+            return (true, "¡Correo verificado correctamente! Ya puedes iniciar sesión.");
+        }
+
+        public async Task<(bool exito, string mensaje)> ReenviarVerificacionAsync(string email)
+        {
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == email);
+
+            if (usuario == null)
+                return (false, "No existe una cuenta con ese correo.");
+
+            if (usuario.EmailVerificado)
+                return (false, "Este correo ya está verificado.");
+
+            usuario.TokenVerificacion = Guid.NewGuid().ToString("N");
+            usuario.TokenExpiracion = DateTime.Now.AddHours(24);
+            _context.SaveChanges();
+
+            var enviado = await _emailService.EnviarCorreoVerificacionAsync(usuario.Email, usuario.NombreCompleto, usuario.TokenVerificacion);
+
+            return enviado
+                ? (true, "Correo de verificación reenviado. Revisa tu bandeja.")
+                : (false, "No se pudo enviar el correo. Intenta de nuevo más tarde.");
         }
 
         public Usuario? ValidarCredenciales(string email, string password)
@@ -75,7 +123,10 @@ namespace AuraDental.Services
 
             bool passwordValida = BCrypt.Net.BCrypt.Verify(password, usuario.PasswordHash);
 
-            return passwordValida ? usuario : null;
+            if (!passwordValida || !usuario.EmailVerificado)
+                return null;
+
+            return usuario;
         }
 
         public (bool exito, string mensaje) CambiarPassword(int usuarioId, string passwordActual, string passwordNueva)

@@ -11,6 +11,19 @@
         <div class="alert alert-danger">@ViewBag.Error</div>
     }
 
+    @if (ViewBag.MostrarReenviar == true)
+    {
+        <form asp-action="ReenviarVerificacion" method="post" class="mb-3">
+            <input type="hidden" name="email" value="@ViewBag.EmailPendiente" />
+            <button type="submit" class="btn btn-outline-secondary btn-sm w-100">Reenviar correo de verificación</button>
+        </form>
+    }
+
+    @if (TempData["MensajeReenvio"] != null)
+    {
+        <div class="alert alert-info">@TempData["MensajeReenvio"]</div>
+    }
+
     <form method="post" asp-action="Login">
         <div class="mb-3">
             <label class="form-label">Correo electrónico o usuario</label>

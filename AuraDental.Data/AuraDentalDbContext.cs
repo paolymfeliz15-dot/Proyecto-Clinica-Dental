@@ -93,6 +93,7 @@ namespace AuraDental.Data
                     PasswordHash = "$2b$11$d5.lXPkCEuYNABoynEZpQ.MR6bzSzsgCJdkHRLWlT51wrH/wiWM5W",
                     RolId = 1,
                     Activo = true,
+                    EmailVerificado = true,
                     FechaCreacion = new DateTime(2026, 7, 11)
                 }
             );

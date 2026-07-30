@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Verificación de Correo";
+    bool exito = ViewBag.Exito;
+}
+
+<div class="container mt-5 text-center" style="max-width: 450px;">
+    @if (exito)
+    {
+        <h2 class="text-success mb-3">✓ Correo Verificado</h2>
+    }
+    else
+    {
+        <h2 class="text-danger mb-3">Enlace no válido</h2>
+    }
+    <p>@ViewBag.Mensaje</p>
+    <a asp-action="Login" class="btn btn-primary mt-3">Ir a Iniciar Sesión</a>
+</div>
