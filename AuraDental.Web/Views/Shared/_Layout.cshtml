@@ -48,7 +48,13 @@
                     <ul class="navbar-nav">
                         @if (rolActual != null)
                         {
-                            <li class="nav-item"><a class="nav-link" asp-controller="Cuenta" asp-action="EditarPerfil">Mi Perfil</a></li>
+                            var fotoNavbar = Context.Session.GetString("FotoPerfilUrl") ?? "/images/default-avatar.svg";
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2" asp-controller="Cuenta" asp-action="EditarPerfil">
+                                    <img src="@fotoNavbar" alt="Perfil" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover;" />
+                                    Mi Perfil
+                                </a>
+                            </li>
                             <li class="nav-item"><a class="nav-link" asp-controller="Cuenta" asp-action="Logout">Cerrar sesión</a></li>
                         }
                         else

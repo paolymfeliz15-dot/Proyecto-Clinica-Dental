@@ -4,6 +4,8 @@ using System.Diagnostics;
 using AuraDental.Services;
 using AuraDental.Data;
 using AuraDental.Data.Entities;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace AuraDental.Web.Controllers
 {
@@ -46,6 +48,9 @@ namespace AuraDental.Web.Controllers
             HttpContext.Session.SetInt32("UsuarioId", usuario.UsuarioId);
             HttpContext.Session.SetString("NombreCompleto", usuario.NombreCompleto);
             HttpContext.Session.SetString("Rol", usuario.Rol.Nombre);
+
+            if (!string.IsNullOrWhiteSpace(usuario.FotoPerfilUrl))
+                HttpContext.Session.SetString("FotoPerfilUrl", usuario.FotoPerfilUrl);
 
             // Redirección según el rol
             return usuario.Rol.Nombre switch
@@ -149,6 +154,34 @@ namespace AuraDental.Web.Controllers
             ViewBag.Exito = mensaje;
             var usuarioActualizado = _context.Usuarios.Find(usuarioId.Value);
             return View(usuarioActualizado);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActualizarFotoPerfil(IFormFile foto)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null)
+                return RedirectToAction("Login");
+
+            if (foto == null || foto.Length == 0)
+            {
+                TempData["ErrorFoto"] = "Debes seleccionar una imagen.";
+                return RedirectToAction("EditarPerfil");
+            }
+
+            using var memoryStream = new MemoryStream();
+            await foto.CopyToAsync(memoryStream);
+            var extension = Path.GetExtension(foto.FileName);
+
+            var (exito, mensaje, rutaFoto) = _authService.ActualizarFotoPerfil(usuarioId.Value, memoryStream.ToArray(), extension);
+
+            if (exito && rutaFoto != null)
+            {
+                HttpContext.Session.SetString("FotoPerfilUrl", rutaFoto);
+            }
+
+            TempData["ErrorFoto"] = exito ? null : mensaje;
+            return RedirectToAction("EditarPerfil");
         }
     }
 }
