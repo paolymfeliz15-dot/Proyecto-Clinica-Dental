@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ namespace AuraDental.Services
     public class AuthService : IAuthService
     {
         private readonly AuraDentalDbContext _context;
+
+        private readonly string[] _extensionesPermitidas = { ".jpg", ".jpeg", ".png", ".webp" };
+        private const long TamanoMaximoBytes = 3 * 1024 * 1024; // 3 MB
 
         public AuthService(AuraDentalDbContext context)
         {
@@ -109,6 +113,41 @@ namespace AuraDental.Services
             _context.SaveChanges();
 
             return (true, "Perfil actualizado correctamente.");
+        }
+
+        public (bool exito, string mensaje, string? rutaFoto) ActualizarFotoPerfil(int usuarioId, byte[] contenidoArchivo, string extension)
+        {
+            var usuario = _context.Usuarios.Find(usuarioId);
+            if (usuario == null)
+                return (false, "Usuario no encontrado.", null);
+
+            extension = extension.ToLowerInvariant();
+            if (!_extensionesPermitidas.Contains(extension))
+                return (false, "Formato de imagen no permitido. Usa JPG, PNG o WEBP.", null);
+
+            if (contenidoArchivo.Length > TamanoMaximoBytes)
+                return (false, "La imagen no puede superar los 3 MB.", null);
+
+            var nombreArchivo = $"{usuarioId}_{Guid.NewGuid()}{extension}";
+            var carpetaDestino = Path.Combine("wwwroot", "uploads", "perfiles");
+            Directory.CreateDirectory(carpetaDestino);
+
+            var rutaFisica = Path.Combine(carpetaDestino, nombreArchivo);
+            File.WriteAllBytes(rutaFisica, contenidoArchivo);
+
+            // Borramos la foto anterior si existía, para no acumular archivos huérfanos
+            if (!string.IsNullOrWhiteSpace(usuario.FotoPerfilUrl))
+            {
+                var rutaAnterior = Path.Combine("wwwroot", usuario.FotoPerfilUrl.TrimStart('/'));
+                if (File.Exists(rutaAnterior))
+                    File.Delete(rutaAnterior);
+            }
+
+            var rutaWeb = $"/uploads/perfiles/{nombreArchivo}";
+            usuario.FotoPerfilUrl = rutaWeb;
+            _context.SaveChanges();
+
+            return (true, "Foto de perfil actualizada.", rutaWeb);
         }
     }
 }
