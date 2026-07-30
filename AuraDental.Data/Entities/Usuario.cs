@@ -28,5 +28,6 @@ namespace AuraDental.Data.Entities
         public string? EstadoProvincia { get; set; } // viene de la API, ya no de la tabla local
         public string? Ciudad { get; set; }
         public string? Sector { get; set; }
+        public string? FotoPerfilUrl { get; set; }
     }
 }
