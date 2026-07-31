@@ -17,7 +17,6 @@ namespace AuraDental.Infraestructura
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Rol> Roles { get; set; }
-        public DbSet<Provincia> Provincias { get; set; }
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<BloqueAgenda> BloquesAgenda { get; set; }
         public DbSet<Cita> Citas { get; set; }
@@ -29,11 +28,6 @@ namespace AuraDental.Infraestructura
             // Un email no se puede repetir entre usuarios
             modelBuilder.Entity<Usuario>()
                 .HasIndex(u => u.Email)
-                .IsUnique();
-
-            // Un nombre de provincia no se puede repetir
-            modelBuilder.Entity<Provincia>()
-                .HasIndex(p => p.Nombre)
                 .IsUnique();
 
             // Datos semilla: los 3 roles del sistema, ya creados desde el inicio
