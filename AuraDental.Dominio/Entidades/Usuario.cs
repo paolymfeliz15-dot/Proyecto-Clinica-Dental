@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuraDental.Data.Entities
+namespace AuraDental.Dominio.Entidades
 {
     public class Usuario
     {

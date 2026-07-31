@@ -14,4 +14,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuraDental.Dominio\AuraDental.Dominio.csproj" />
+  </ItemGroup>
+
 </Project>

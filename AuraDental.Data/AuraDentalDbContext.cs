@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using AuraDental.Data.Entities;
+using AuraDental.Dominio.Entidades;
 
-namespace AuraDental.Data
+namespace AuraDental.Infraestructura
 {
     public class AuraDentalDbContext : DbContext
     {

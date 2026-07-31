@@ -1,32 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuraDental.Data;
-using AuraDental.Data.Entities;
+﻿using AuraDental.Dominio.Entidades;
+using AuraDental.Dominio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public class AuthService : IAuthService
     {
-        private readonly AuraDentalDbContext _context;
+        private readonly IRepository<Usuario> _usuarioRepository;
         private readonly IEmailService _emailService;
 
-        private readonly string[] _extensionesPermitidas = { ".jpg", ".jpeg", ".png", ".webp" };
-        private const long TamanoMaximoBytes = 3 * 1024 * 1024; // 3 MB
-
-        public AuthService(AuraDentalDbContext context, IEmailService emailService)
+        public AuthService(IRepository<Usuario> usuarioRepository, IEmailService emailService)
         {
-            _context = context;
+            _usuarioRepository = usuarioRepository;
             _emailService = emailService;
         }
 
         public bool ExisteEmail(string email)
         {
-            return _context.Usuarios.Any(u => u.Email == email);
+            return _usuarioRepository.Consultar().Any(u => u.Email == email);
         }
 
         public Usuario RegistrarUsuario(string nombreCompleto, string email, string password, int rolId)
@@ -40,81 +31,15 @@ namespace AuraDental.Services
                 Activo = true
             };
 
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
+            _usuarioRepository.Agregar(usuario);
+            _usuarioRepository.GuardarCambios();
 
             return usuario;
         }
 
-        public (bool exito, string mensaje) RegistrarPaciente(Usuario datosUsuario, string password)
-        {
-            if (ExisteEmail(datosUsuario.Email))
-                return (false, "Ese correo ya está registrado.");
-
-            if (!string.IsNullOrWhiteSpace(datosUsuario.Cedula) &&
-                _context.Usuarios.Any(u => u.Cedula == datosUsuario.Cedula))
-                return (false, "Ya existe una cuenta registrada con esa cédula.");
-
-            datosUsuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            datosUsuario.RolId = 2; // Paciente, siempre fijo
-            datosUsuario.Activo = true;
-            datosUsuario.FechaCreacion = DateTime.Now;
-            datosUsuario.EmailVerificado = false;
-            datosUsuario.TokenVerificacion = Guid.NewGuid().ToString("N");
-            datosUsuario.TokenExpiracion = DateTime.Now.AddHours(24);
-
-            _context.Usuarios.Add(datosUsuario);
-            _context.SaveChanges();
-
-            // Enviamos el correo de forma "fire and forget" controlada:
-            // si falla, no revertimos el registro, solo lo dejamos sin verificar
-            _ = _emailService.EnviarCorreoVerificacionAsync(datosUsuario.Email, datosUsuario.NombreCompleto, datosUsuario.TokenVerificacion);
-
-            return (true, "Registro exitoso. Revisa tu correo para verificar tu cuenta antes de iniciar sesión.");
-        }
-
-        public (bool exito, string mensaje) VerificarCorreo(string token)
-        {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.TokenVerificacion == token);
-
-            if (usuario == null)
-                return (false, "Enlace de verificación inválido.");
-
-            if (usuario.TokenExpiracion < DateTime.Now)
-                return (false, "El enlace de verificación expiró. Solicita uno nuevo.");
-
-            usuario.EmailVerificado = true;
-            usuario.TokenVerificacion = null;
-            usuario.TokenExpiracion = null;
-            _context.SaveChanges();
-
-            return (true, "¡Correo verificado correctamente! Ya puedes iniciar sesión.");
-        }
-
-        public async Task<(bool exito, string mensaje)> ReenviarVerificacionAsync(string email)
-        {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == email);
-
-            if (usuario == null)
-                return (false, "No existe una cuenta con ese correo.");
-
-            if (usuario.EmailVerificado)
-                return (false, "Este correo ya está verificado.");
-
-            usuario.TokenVerificacion = Guid.NewGuid().ToString("N");
-            usuario.TokenExpiracion = DateTime.Now.AddHours(24);
-            _context.SaveChanges();
-
-            var enviado = await _emailService.EnviarCorreoVerificacionAsync(usuario.Email, usuario.NombreCompleto, usuario.TokenVerificacion);
-
-            return enviado
-                ? (true, "Correo de verificación reenviado. Revisa tu bandeja.")
-                : (false, "No se pudo enviar el correo. Intenta de nuevo más tarde.");
-        }
-
         public Usuario? ValidarCredenciales(string email, string password)
         {
-            var usuario = _context.Usuarios
+            var usuario = _usuarioRepository.Consultar()
                 .Include(u => u.Rol)
                 .FirstOrDefault(u => u.Email == email && u.Activo);
 
@@ -122,16 +47,12 @@ namespace AuraDental.Services
                 return null;
 
             bool passwordValida = BCrypt.Net.BCrypt.Verify(password, usuario.PasswordHash);
-
-            if (!passwordValida || !usuario.EmailVerificado)
-                return null;
-
-            return usuario;
+            return passwordValida ? usuario : null;
         }
 
         public (bool exito, string mensaje) CambiarPassword(int usuarioId, string passwordActual, string passwordNueva)
         {
-            var usuario = _context.Usuarios.Find(usuarioId);
+            var usuario = _usuarioRepository.ObtenerPorId(usuarioId);
             if (usuario == null)
                 return (false, "Usuario no encontrado.");
 
@@ -142,18 +63,18 @@ namespace AuraDental.Services
                 return (false, "La nueva contraseña debe tener al menos 6 caracteres.");
 
             usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(passwordNueva);
-            _context.SaveChanges();
+            _usuarioRepository.GuardarCambios();
 
             return (true, "Contraseña actualizada correctamente.");
         }
 
         public (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email)
         {
-            var usuario = _context.Usuarios.Find(usuarioId);
+            var usuario = _usuarioRepository.ObtenerPorId(usuarioId);
             if (usuario == null)
                 return (false, "Usuario no encontrado.");
 
-            bool correoEnUso = _context.Usuarios
+            bool correoEnUso = _usuarioRepository.Consultar()
                 .Any(u => u.Email == email && u.UsuarioId != usuarioId);
 
             if (correoEnUso)
@@ -161,22 +82,89 @@ namespace AuraDental.Services
 
             usuario.NombreCompleto = nombreCompleto;
             usuario.Email = email;
-            _context.SaveChanges();
+            _usuarioRepository.GuardarCambios();
 
             return (true, "Perfil actualizado correctamente.");
         }
 
+        public (bool exito, string mensaje) RegistrarPaciente(Usuario datosUsuario, string password)
+        {
+            if (ExisteEmail(datosUsuario.Email))
+                return (false, "Ese correo ya está registrado.");
+
+            if (!string.IsNullOrWhiteSpace(datosUsuario.Cedula) &&
+                _usuarioRepository.Consultar().Any(u => u.Cedula == datosUsuario.Cedula))
+                return (false, "Ya existe una cuenta registrada con esa cédula.");
+
+            datosUsuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            datosUsuario.RolId = 2;
+            datosUsuario.Activo = true;
+            datosUsuario.FechaCreacion = DateTime.Now;
+            datosUsuario.EmailVerificado = false;
+            datosUsuario.TokenVerificacion = Guid.NewGuid().ToString("N");
+            datosUsuario.TokenExpiracion = DateTime.Now.AddHours(24);
+
+            _usuarioRepository.Agregar(datosUsuario);
+            _usuarioRepository.GuardarCambios();
+
+            _ = _emailService.EnviarCorreoVerificacionAsync(datosUsuario.Email, datosUsuario.NombreCompleto, datosUsuario.TokenVerificacion);
+
+            return (true, "Registro exitoso. Revisa tu correo para verificar tu cuenta antes de iniciar sesión.");
+        }
+
+        public (bool exito, string mensaje) VerificarCorreo(string token)
+        {
+            var usuario = _usuarioRepository.Consultar().FirstOrDefault(u => u.TokenVerificacion == token);
+
+            if (usuario == null)
+                return (false, "Enlace de verificación inválido.");
+
+            if (usuario.TokenExpiracion < DateTime.Now)
+                return (false, "El enlace de verificación expiró. Solicita uno nuevo.");
+
+            usuario.EmailVerificado = true;
+            usuario.TokenVerificacion = null;
+            usuario.TokenExpiracion = null;
+            _usuarioRepository.GuardarCambios();
+
+            return (true, "¡Correo verificado correctamente! Ya puedes iniciar sesión.");
+        }
+
+        public async Task<(bool exito, string mensaje)> ReenviarVerificacionAsync(string email)
+        {
+            var usuario = _usuarioRepository.Consultar().FirstOrDefault(u => u.Email == email);
+
+            if (usuario == null)
+                return (false, "No existe una cuenta con ese correo.");
+
+            if (usuario.EmailVerificado)
+                return (false, "Este correo ya está verificado.");
+
+            usuario.TokenVerificacion = Guid.NewGuid().ToString("N");
+            usuario.TokenExpiracion = DateTime.Now.AddHours(24);
+            _usuarioRepository.GuardarCambios();
+
+            var enviado = await _emailService.EnviarCorreoVerificacionAsync(usuario.Email, usuario.NombreCompleto, usuario.TokenVerificacion);
+
+            return enviado
+                ? (true, "Correo de verificación reenviado. Revisa tu bandeja.")
+                : (false, "No se pudo enviar el correo. Intenta de nuevo más tarde.");
+        }
+
         public (bool exito, string mensaje, string? rutaFoto) ActualizarFotoPerfil(int usuarioId, byte[] contenidoArchivo, string extension)
         {
-            var usuario = _context.Usuarios.Find(usuarioId);
+            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            const long tamanoMaximoBytes = 3 * 1024 * 1024;
+
+            var usuario = _usuarioRepository.ObtenerPorId(usuarioId);
             if (usuario == null)
                 return (false, "Usuario no encontrado.", null);
 
             extension = extension.ToLowerInvariant();
-            if (!_extensionesPermitidas.Contains(extension))
+            if (!extensionesPermitidas.Contains(extension))
                 return (false, "Formato de imagen no permitido. Usa JPG, PNG o WEBP.", null);
 
-            if (contenidoArchivo.Length > TamanoMaximoBytes)
+            if (contenidoArchivo.Length > tamanoMaximoBytes)
                 return (false, "La imagen no puede superar los 3 MB.", null);
 
             var nombreArchivo = $"{usuarioId}_{Guid.NewGuid()}{extension}";
@@ -186,7 +174,6 @@ namespace AuraDental.Services
             var rutaFisica = Path.Combine(carpetaDestino, nombreArchivo);
             File.WriteAllBytes(rutaFisica, contenidoArchivo);
 
-            // Borramos la foto anterior si existía, para no acumular archivos huérfanos
             if (!string.IsNullOrWhiteSpace(usuario.FotoPerfilUrl))
             {
                 var rutaAnterior = Path.Combine("wwwroot", usuario.FotoPerfilUrl.TrimStart('/'));
@@ -196,7 +183,7 @@ namespace AuraDental.Services
 
             var rutaWeb = $"/uploads/perfiles/{nombreArchivo}";
             usuario.FotoPerfilUrl = rutaWeb;
-            _context.SaveChanges();
+            _usuarioRepository.GuardarCambios();
 
             return (true, "Foto de perfil actualizada.", rutaWeb);
         }

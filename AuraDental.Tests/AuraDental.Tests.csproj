@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AuraDental.Data\AuraDental.Data.csproj" />
-    <ProjectReference Include="..\AuraDental.Services\AuraDental.Services.csproj" />
+    <ProjectReference Include="..\AuraDental.Data\AuraDental.Infraestructura.csproj" />
+    <ProjectReference Include="..\AuraDental.Services\AuraDental.Aplicacion.csproj" />
   </ItemGroup>
 
 </Project>

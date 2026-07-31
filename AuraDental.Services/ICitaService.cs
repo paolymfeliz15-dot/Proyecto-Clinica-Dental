@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuraDental.Data.Entities;
+﻿
+using AuraDental.Dominio.Entidades;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public interface ICitaService
     {

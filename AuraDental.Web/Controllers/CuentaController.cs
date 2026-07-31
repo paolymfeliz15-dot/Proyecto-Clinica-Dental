@@ -1,9 +1,9 @@
 using AuraDental.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using AuraDental.Services;
-using AuraDental.Data;
-using AuraDental.Data.Entities;
+using AuraDental.Aplicacion;
+using AuraDental.Infraestructura;
+using AuraDental.Dominio.Entidades;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 

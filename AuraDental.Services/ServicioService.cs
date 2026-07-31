@@ -1,50 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuraDental.Data;
-using AuraDental.Data.Entities;
+﻿using AuraDental.Dominio.Entidades;
+using AuraDental.Dominio.Interfaces;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public class ServicioService : IServicioService
     {
-        private readonly AuraDentalDbContext _context;
+        private readonly IRepository<Servicio> _servicioRepository;
 
-        public ServicioService(AuraDentalDbContext context)
+        public ServicioService(IRepository<Servicio> servicioRepository)
         {
-            _context = context;
+            _servicioRepository = servicioRepository;
         }
 
         public List<Servicio> ObtenerTodos()
         {
-            return _context.Servicios
+            return _servicioRepository.Consultar()
                 .OrderBy(s => s.Nombre)
                 .ToList();
         }
 
-        public Servicio? ObtenerPorId(int id)
-        {
-            return _context.Servicios.Find(id);
-        }
+        public Servicio? ObtenerPorId(int id) => _servicioRepository.ObtenerPorId(id);
 
         public bool ExisteNombre(string nombre, int? idExcluir = null)
         {
-            return _context.Servicios
+            return _servicioRepository.Consultar()
                 .Any(s => s.Nombre == nombre && s.ServicioId != idExcluir);
         }
 
         public void Crear(Servicio servicio)
         {
             servicio.Activo = true;
-            _context.Servicios.Add(servicio);
-            _context.SaveChanges();
+            _servicioRepository.Agregar(servicio);
+            _servicioRepository.GuardarCambios();
         }
 
         public void Actualizar(Servicio servicio)
         {
-            var existente = _context.Servicios.Find(servicio.ServicioId);
+            var existente = _servicioRepository.ObtenerPorId(servicio.ServicioId);
             if (existente == null) return;
 
             existente.Nombre = servicio.Nombre;
@@ -52,16 +44,16 @@ namespace AuraDental.Services
             existente.DuracionMinutos = servicio.DuracionMinutos;
             existente.Precio = servicio.Precio;
 
-            _context.SaveChanges();
+            _servicioRepository.GuardarCambios();
         }
 
         public void CambiarEstado(int id, bool activo)
         {
-            var servicio = _context.Servicios.Find(id);
+            var servicio = _servicioRepository.ObtenerPorId(id);
             if (servicio == null) return;
 
             servicio.Activo = activo;
-            _context.SaveChanges();
+            _servicioRepository.GuardarCambios();
         }
     }
 }

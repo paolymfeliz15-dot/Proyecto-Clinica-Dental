@@ -1,10 +1,6 @@
-﻿using AuraDental.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using AuraDental.Dominio.Entidades;
 
-
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public interface IAgendaService
     {

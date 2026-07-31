@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 
-namespace AuraDental.Services.Dtos
+namespace AuraDental.Aplicacion.Dtos
 {
     public class PaisesRespuestaDto
     {

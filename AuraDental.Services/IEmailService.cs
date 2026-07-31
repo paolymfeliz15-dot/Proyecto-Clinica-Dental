@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public interface IEmailService
     {

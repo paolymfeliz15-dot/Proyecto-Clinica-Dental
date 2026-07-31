@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AuraDental.Services;
-using AuraDental.Data;
-using AuraDental.Data.Entities;
+using AuraDental.Aplicacion;
+using AuraDental.Infraestructura;
+using AuraDental.Dominio.Entidades;
 using AuraDental.Web.Filters;
 using Microsoft.EntityFrameworkCore;
 

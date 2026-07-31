@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace AuraDental.Data.Migrations
+namespace AuraDental.Infraestructura.Migrations
 {
     /// <inheritdoc />
     public partial class Sprint1_UsuarioRolProvincia : Migration

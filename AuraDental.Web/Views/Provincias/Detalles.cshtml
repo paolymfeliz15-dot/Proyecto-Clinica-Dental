@@ -1,0 +1,16 @@
+﻿@model AuraDental.Dominio.Entidades.Provincia
+
+@{
+    ViewData["Title"] = "Detalles de la Provincia";
+}
+
+<div class="container mt-4" style="max-width: 450px;">
+    <h2>Detalles</h2>
+    <dl class="row">
+        <dt class="col-sm-4">Nombre</dt>
+        <dd class="col-sm-8">@Model.Nombre</dd>
+        <dt class="col-sm-4">Estado</dt>
+        <dd class="col-sm-8">@(Model.Activa ? "Activa" : "Inactiva")</dd>
+    </dl>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Volver</a>
+</div>

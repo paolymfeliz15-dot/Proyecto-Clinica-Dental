@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AuraDental.Services;
+using AuraDental.Aplicacion;
 
 namespace AuraDental.Web.Controllers
 {

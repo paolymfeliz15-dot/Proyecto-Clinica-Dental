@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text;
-using AuraDental.Services.Dtos;
+using AuraDental.Aplicacion.Dtos;
 using Microsoft.Extensions.Caching.Memory;
 
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public class PaisService : IPaisService
     {

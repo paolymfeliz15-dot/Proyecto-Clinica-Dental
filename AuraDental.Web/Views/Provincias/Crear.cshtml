@@ -1,0 +1,23 @@
+﻿@model AuraDental.Dominio.Entidades.Provincia
+
+@{
+    ViewData["Title"] = "Nueva Provincia";
+}
+
+<div class="container mt-4" style="max-width: 450px;">
+    <h2>Nueva Provincia</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Crear" method="post">
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" name="Nombre" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,6 +1,6 @@
-﻿using AuraDental.Data.Entities;
+﻿using AuraDental.Dominio.Entidades;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public interface IPersonalService
     {

@@ -1,5 +1,7 @@
-using AuraDental.Data;
-using AuraDental.Services;
+using AuraDental.Aplicacion;
+using AuraDental.Dominio.Interfaces;
+using AuraDental.Infraestructura;
+using AuraDental.Infraestructura.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,9 @@ builder.Services.AddScoped<IPersonalService, PersonalService>();
 builder.Services.AddDbContext<AuraDentalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AuraDentalConnection")));
 
+// Registro del repositorio genérico
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
 // Registro del servicio de autenticación
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
@@ -20,6 +25,7 @@ builder.Services.AddScoped<ICitaService, CitaService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<IPaisService, PaisService>();
 builder.Services.AddHttpClient<IEmailService, EmailService>();
+builder.Services.AddScoped<IProvinciaService, ProvinciaService>();
 
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>
@@ -44,10 +50,10 @@ app.UseRouting();
 
 // El middleware de sesión colocado estratégicamente después de Routing y antes de Authorization
 app.UseSession();
-
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

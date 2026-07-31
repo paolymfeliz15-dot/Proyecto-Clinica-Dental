@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public class EmailService : IEmailService
     {

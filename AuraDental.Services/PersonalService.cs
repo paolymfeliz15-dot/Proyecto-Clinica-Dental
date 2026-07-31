@@ -1,23 +1,21 @@
-﻿using AuraDental.Data;
-using AuraDental.Data.Entities;
+﻿using AuraDental.Dominio.Entidades;
+using AuraDental.Dominio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuraDental.Services
+namespace AuraDental.Aplicacion
 {
     public class PersonalService : IPersonalService
     {
-        private readonly AuraDentalDbContext _context;
+        private readonly IRepository<Usuario> _usuarioRepository;
 
-        public PersonalService(AuraDentalDbContext context)
+        public PersonalService(IRepository<Usuario> usuarioRepository)
         {
-            _context = context;
+            _usuarioRepository = usuarioRepository;
         }
 
         public List<Usuario> ObtenerTodos()
         {
-            // Solo Administradores y Asistentes son "Personal".
-            // Los Pacientes se gestionan aparte (no en esta pantalla).
-            return _context.Usuarios
+            return _usuarioRepository.Consultar()
                 .Include(u => u.Rol)
                 .Where(u => u.Rol.Nombre == "Administrador" || u.Rol.Nombre == "Asistente")
                 .OrderBy(u => u.NombreCompleto)
@@ -26,14 +24,14 @@ namespace AuraDental.Services
 
         public Usuario? ObtenerPorId(int id)
         {
-            return _context.Usuarios
+            return _usuarioRepository.Consultar()
                 .Include(u => u.Rol)
                 .FirstOrDefault(u => u.UsuarioId == id);
         }
 
         public bool ExisteEmail(string email, int? idExcluir = null)
         {
-            return _context.Usuarios
+            return _usuarioRepository.Consultar()
                 .Any(u => u.Email == email && u.UsuarioId != idExcluir);
         }
 
@@ -43,29 +41,37 @@ namespace AuraDental.Services
             usuario.Activo = true;
             usuario.FechaCreacion = DateTime.Now;
 
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
+            _usuarioRepository.Agregar(usuario);
+            _usuarioRepository.GuardarCambios();
         }
 
         public void Actualizar(Usuario usuario)
         {
-            var existente = _context.Usuarios.Find(usuario.UsuarioId);
+            var existente = _usuarioRepository.ObtenerPorId(usuario.UsuarioId);
             if (existente == null) return;
 
             existente.NombreCompleto = usuario.NombreCompleto;
             existente.Email = usuario.Email;
             existente.RolId = usuario.RolId;
+            existente.Apellidos = usuario.Apellidos;
+            existente.Telefono = usuario.Telefono;
+            existente.Cedula = usuario.Cedula;
+            existente.Direccion = usuario.Direccion;
+            existente.Pais = usuario.Pais;
+            existente.EstadoProvincia = usuario.EstadoProvincia;
+            existente.Ciudad = usuario.Ciudad;
+            existente.Sector = usuario.Sector;
 
-            _context.SaveChanges();
+            _usuarioRepository.GuardarCambios();
         }
 
         public void CambiarEstado(int id, bool activo)
         {
-            var usuario = _context.Usuarios.Find(id);
+            var usuario = _usuarioRepository.ObtenerPorId(id);
             if (usuario == null) return;
 
             usuario.Activo = activo;
-            _context.SaveChanges();
+            _usuarioRepository.GuardarCambios();
         }
     }
 }

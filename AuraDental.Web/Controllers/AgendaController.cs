@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AuraDental.Services;
-using AuraDental.Data.Entities;
+using AuraDental.Aplicacion;
+using AuraDental.Dominio.Entidades;
 using AuraDental.Web.Filters;
 
 namespace AuraDental.Web.Controllers

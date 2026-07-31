@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace AuraDental.Data.Migrations
+namespace AuraDental.Infraestructura.Migrations
 {
     /// <inheritdoc />
     public partial class AmpliarUsuarioParaPacientes : Migration
