@@ -14,7 +14,6 @@ namespace AuraDental.Infraestructura
             : base(options)
         {
         }
-
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Servicio> Servicios { get; set; }
@@ -79,10 +78,10 @@ namespace AuraDental.Infraestructura
                 .HasFilter("[Cedula] IS NOT NULL"); // permite múltiples NULL (personal sin cédula registrada)
 
             modelBuilder.Entity<Expediente>()
-    .HasOne(e => e.Paciente)
-    .WithMany()
-    .HasForeignKey(e => e.PacienteId)
-    .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(e => e.Paciente)
+                .WithMany()
+                .HasForeignKey(e => e.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Expediente>()
                 .HasOne(e => e.Cita)

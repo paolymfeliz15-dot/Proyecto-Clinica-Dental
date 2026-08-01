@@ -73,7 +73,7 @@ namespace AuraDental.Web.Controllers
         public IActionResult VerificarCorreo(string token)
         {
             var (exito, mensaje) = _authService.VerificarCorreo(token);
-            ViewBag.Exito = exito;
+            ViewBag.Exito =  exito;
             ViewBag.Mensaje = mensaje;
             return View();
         }

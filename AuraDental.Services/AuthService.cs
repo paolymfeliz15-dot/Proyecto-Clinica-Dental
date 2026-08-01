@@ -87,6 +87,21 @@ namespace AuraDental.Aplicacion
             return (true, "Perfil actualizado correctamente.");
         }
 
+        public (bool exito, string mensaje) CambiarNombreUsuario(int usuarioId, string nuevoNombre)
+        {
+            if (string.IsNullOrWhiteSpace(nuevoNombre) || nuevoNombre.Trim().Length < 2)
+                return (false, "El nombre debe tener al menos 2 caracteres.");
+
+            var usuario = _usuarioRepository.ObtenerPorId(usuarioId);
+            if (usuario == null)
+                return (false, "Usuario no encontrado.");
+
+            usuario.NombreCompleto = nuevoNombre.Trim();
+            _usuarioRepository.GuardarCambios();
+
+            return (true, "Nombre de usuario actualizado correctamente.");
+        }
+
         public (bool exito, string mensaje) RegistrarPaciente(Usuario datosUsuario, string password)
         {
             if (ExisteEmail(datosUsuario.Email))
