@@ -142,6 +142,39 @@ namespace AuraDental.Web.Controllers
         }
 
         [HttpGet]
+        public IActionResult CambiarNombreUsuario()
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login");
+
+            ViewBag.NombreActual = HttpContext.Session.GetString("NombreCompleto");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CambiarNombreUsuario(string nuevoNombre)
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login");
+
+            var (exito, mensaje) = _authService.CambiarNombreUsuario(usuarioId.Value, nuevoNombre);
+
+            if (!exito)
+            {
+                ViewBag.Error = mensaje;
+                ViewBag.NombreActual = HttpContext.Session.GetString("NombreCompleto");
+                return View();
+            }
+
+            // Actualizamos la sesión para que el cambio se vea reflejado de inmediato en el navbar
+            HttpContext.Session.SetString("NombreCompleto", nuevoNombre.Trim());
+
+            ViewBag.Exito = mensaje;
+            ViewBag.NombreActual = nuevoNombre.Trim();
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult EditarPerfil()
         {
             var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
