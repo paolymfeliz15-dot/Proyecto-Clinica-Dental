@@ -26,6 +26,8 @@ builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<IPaisService, PaisService>();
 builder.Services.AddHttpClient<IEmailService, EmailService>();
 
+builder.Services.AddScoped<IExpedienteService, ExpedienteService>();
+
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>
 {

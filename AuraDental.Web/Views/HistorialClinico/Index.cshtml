@@ -1,0 +1,36 @@
+﻿@model List<AuraDental.Dominio.Entidades.Expediente>
+
+@{
+    ViewData["Title"] = "Historial Clínico";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Mi Historial Clínico</h2>
+        <a asp-controller="PacienteDashboard" asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Todavía no tienes expedientes registrados. Aparecerán aquí después de tu primera cita atendida.</p>
+    }
+    else
+    {
+        @foreach (var expediente in Model)
+        {
+            <div class="card p-3 mb-3">
+                <div class="d-flex justify-content-between">
+                    <h5>@(expediente.Cita?.Servicio.Nombre ?? "Consulta general")</h5>
+                    <span class="text-muted small">@expediente.FechaRegistro.ToString("dd/MM/yyyy")</span>
+                </div>
+                <p class="mb-1"><strong>Diagnóstico:</strong> @expediente.Diagnostico</p>
+                <p class="mb-1"><strong>Tratamiento:</strong> @expediente.Tratamiento</p>
+                @if (!string.IsNullOrWhiteSpace(expediente.Observaciones))
+                {
+                    <p class="mb-1"><strong>Observaciones:</strong> @expediente.Observaciones</p>
+                }
+                <p class="text-muted small mb-0">Registrado por: @expediente.RegistradoPor.NombreCompleto</p>
+            </div>
+        }
+    }
+</div>
