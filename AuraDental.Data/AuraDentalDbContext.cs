@@ -20,7 +20,7 @@ namespace AuraDental.Infraestructura
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<BloqueAgenda> BloquesAgenda { get; set; }
         public DbSet<Cita> Citas { get; set; }
-
+        public DbSet<Expediente> Expedientes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -77,6 +77,24 @@ namespace AuraDental.Infraestructura
                 .HasIndex(u => u.Cedula)
                 .IsUnique()
                 .HasFilter("[Cedula] IS NOT NULL"); // permite múltiples NULL (personal sin cédula registrada)
+
+            modelBuilder.Entity<Expediente>()
+    .HasOne(e => e.Paciente)
+    .WithMany()
+    .HasForeignKey(e => e.PacienteId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Expediente>()
+                .HasOne(e => e.Cita)
+                .WithMany()
+                .HasForeignKey(e => e.CitaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Expediente>()
+                .HasOne(e => e.RegistradoPor)
+                .WithMany()
+                .HasForeignKey(e => e.RegistradoPorUsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Usuario>().HasData(
                 new Usuario
