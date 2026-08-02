@@ -36,6 +36,18 @@ namespace AuraDental.Aplicacion
                 .FirstOrDefault(c => c.CitaId == id);
         }
 
+        public List<Cita> ObtenerPorRangoFechas(DateTime desde, DateTime hasta)
+        {
+            return _citaRepository.Consultar()
+                .Include(c => c.Paciente)
+                .Include(c => c.Servicio)
+                .Include(c => c.BloqueAgenda)
+                .Where(c => c.BloqueAgenda.Fecha.Date >= desde.Date && c.BloqueAgenda.Fecha.Date <= hasta.Date)
+                .OrderBy(c => c.BloqueAgenda.Fecha)
+                .ThenBy(c => c.BloqueAgenda.HoraInicio)
+                .ToList();
+        }
+
         public (bool exito, string mensaje) Agendar(int pacienteId, int servicioId, int bloqueAgendaId)
         {
             var servicio = _servicioRepository.ObtenerPorId(servicioId);

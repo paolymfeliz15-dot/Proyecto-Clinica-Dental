@@ -1,0 +1,72 @@
+﻿@model List<AuraDental.Dominio.Entidades.Cita>
+
+@{
+    ViewData["Title"] = "Reporte de Citas";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Reporte de Citas</h2>
+        <a asp-controller="AdministradorDashboard" asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    <form method="get" asp-action="Citas" class="row g-3 align-items-end mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Desde</label>
+            <input type="date" name="desde" class="form-control" value="@ViewBag.Desde" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Hasta</label>
+            <input type="date" name="hasta" class="form-control" value="@ViewBag.Hasta" />
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </form>
+
+    <p class="text-muted">Total de citas encontradas: <strong>@ViewBag.Total</strong></p>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No hay citas registradas en el rango seleccionado.</p>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Paciente</th>
+                    <th>Servicio</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cita in Model)
+                {
+                    <tr>
+                        <td>@cita.BloqueAgenda.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@cita.BloqueAgenda.HoraInicio.ToString(@"hh\:mm")</td>
+                        <td>@cita.Paciente.NombreCompleto</td>
+                        <td>@cita.Servicio.Nombre</td>
+                        <td>
+                            @if (cita.Estado == "Agendada")
+                            {
+                                <span class="badge bg-primary">Agendada</span>
+                            }
+                            else if (cita.Estado == "Cancelada")
+                            {
+                                <span class="badge bg-secondary">Cancelada</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Completada</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
