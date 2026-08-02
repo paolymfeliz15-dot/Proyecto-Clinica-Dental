@@ -13,6 +13,7 @@ namespace AuraDental.Dominio.Entidades
         public string Descripcion { get; set; } = string.Empty;
         public int DuracionMinutos { get; set; }
         public decimal Precio { get; set; }
+        public string? ImagenUrl { get; set; }
 
         // Baja lógica, igual que Usuario y Provincia en el Sprint 1
         public bool Activo { get; set; } = true;
