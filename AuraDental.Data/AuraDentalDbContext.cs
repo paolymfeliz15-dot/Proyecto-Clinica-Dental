@@ -20,6 +20,7 @@ namespace AuraDental.Infraestructura
         public DbSet<BloqueAgenda> BloquesAgenda { get; set; }
         public DbSet<Cita> Citas { get; set; }
         public DbSet<Expediente> Expedientes { get; set; }
+        public DbSet<Resena> Resenas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -93,6 +94,12 @@ namespace AuraDental.Infraestructura
                 .HasOne(e => e.RegistradoPor)
                 .WithMany()
                 .HasForeignKey(e => e.RegistradoPorUsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Resena>()
+                .HasOne(r => r.Paciente)
+                .WithMany()
+                .HasForeignKey(r => r.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Usuario>().HasData(
