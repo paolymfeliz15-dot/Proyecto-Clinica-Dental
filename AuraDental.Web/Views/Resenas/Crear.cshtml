@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Dejar una Reseña";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2 class="mb-4">Cuéntanos tu experiencia</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    @if (ViewBag.Exito == true)
+    {
+        <div class="alert alert-success">@ViewBag.Mensaje</div>
+    }
+
+    <form method="post" asp-action="Crear">
+        <div class="mb-3">
+            <label class="form-label">Calificación</label>
+            <select name="calificacion" class="form-select" required>
+                <option value="">Selecciona...</option>
+                <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                <option value="4">⭐⭐⭐⭐ Muy buena</option>
+                <option value="3">⭐⭐⭐ Buena</option>
+                <option value="2">⭐⭐ Regular</option>
+                <option value="1">⭐ Mala</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Comentario</label>
+            <textarea name="comentario" class="form-control" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Enviar reseña</button>
+    </form>
+
+    <a asp-controller="PacienteDashboard" asp-action="Index" class="btn btn-link w-100 mt-2">← Volver al panel</a>
+</div>

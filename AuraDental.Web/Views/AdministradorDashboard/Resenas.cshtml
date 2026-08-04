@@ -1,0 +1,36 @@
+﻿@model List<AuraDental.Dominio.Entidades.Resena>
+
+@{
+    ViewData["Title"] = "Reseñas de Pacientes";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Reseñas de Pacientes</h2>
+        <a asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Todavía no hay reseñas registradas.</p>
+    }
+    else
+    {
+        @foreach (var resena in Model)
+        {
+            <div class="card p-3 mb-3">
+                <div class="d-flex justify-content-between">
+                    <strong>@resena.Paciente.NombreCompleto</strong>
+                    <span class="text-muted small">@resena.FechaCreacion.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="mb-2">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        @(i <= resena.Calificacion ? "⭐" : "☆")
+                    }
+                </div>
+                <p class="mb-0">@resena.Comentario</p>
+            </div>
+        }
+    }
+</div>
