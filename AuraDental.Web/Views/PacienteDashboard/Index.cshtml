@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Panel de Paciente";
 }
-
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Bienvenido/a, @ViewBag.NombreCompleto</h2>
@@ -43,6 +42,15 @@
                 <div class="card p-3">
                     <h5>Dejar una Reseña</h5>
                     <p class="text-muted mb-0">Comparte tu experiencia</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-controller="Sugerencias" asp-action="Crear" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5>Buzón de Sugerencias</h5>
+                    <p class="text-muted mb-0">Comparte tus ideas</p>
                 </div>
             </a>
         </div>

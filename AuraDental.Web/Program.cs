@@ -25,7 +25,7 @@ builder.Services.AddScoped<ICitaService, CitaService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<IPaisService, PaisService>();
 builder.Services.AddHttpClient<IEmailService, EmailService>();
-
+builder.Services.AddScoped<ISugerenciaService, SugerenciaService>();
 builder.Services.AddScoped<IExpedienteService, ExpedienteService>();
 builder.Services.AddScoped<IResenaService, ResenaService>();
 // Habilitar el servicio de sesiones
