@@ -15,5 +15,6 @@ namespace AuraDental.Aplicacion
         void Actualizar(Servicio servicio);
         void CambiarEstado(int id, bool activo);
         bool ExisteNombre(string nombre, int? idExcluir = null);
+        (bool exito, string mensaje) SubirImagen(int servicioId, byte[] contenidoArchivo, string extension);
     }
 }

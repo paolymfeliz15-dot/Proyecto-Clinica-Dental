@@ -81,5 +81,25 @@ namespace AuraDental.Web.Controllers
             _servicioService.CambiarEstado(id, activo);
             return RedirectToAction("Index");
         }
+
+        // POST: /Servicios/SubirImagen/5
+        [HttpPost]
+        public async Task<IActionResult> SubirImagen(int id, IFormFile imagen)
+        {
+            if (imagen == null || imagen.Length == 0)
+            {
+                TempData["Error"] = "Debes seleccionar una imagen.";
+                return RedirectToAction("Detalles", new { id });
+            }
+
+            using var memoryStream = new MemoryStream();
+            await imagen.CopyToAsync(memoryStream);
+            var extension = Path.GetExtension(imagen.FileName);
+
+            var (exito, mensaje) = _servicioService.SubirImagen(id, memoryStream.ToArray(), extension);
+
+            TempData["Error"] = exito ? null : mensaje;
+            return RedirectToAction("Detalles", new { id });
+        }
     }
 }

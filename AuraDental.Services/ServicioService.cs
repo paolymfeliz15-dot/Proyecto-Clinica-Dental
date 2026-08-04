@@ -1,4 +1,5 @@
-﻿using AuraDental.Dominio.Entidades;
+﻿using System.IO;
+using AuraDental.Dominio.Entidades;
 using AuraDental.Dominio.Interfaces;
 
 namespace AuraDental.Aplicacion
@@ -54,6 +55,42 @@ namespace AuraDental.Aplicacion
 
             servicio.Activo = activo;
             _servicioRepository.GuardarCambios();
+        }
+
+        public (bool exito, string mensaje) SubirImagen(int servicioId, byte[] contenidoArchivo, string extension)
+        {
+            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            const long tamanoMaximoBytes = 4 * 1024 * 1024; // 4 MB
+
+            var servicio = _servicioRepository.ObtenerPorId(servicioId);
+            if (servicio == null)
+                return (false, "Servicio no encontrado.");
+
+            extension = extension.ToLowerInvariant();
+            if (!extensionesPermitidas.Contains(extension))
+                return (false, "Formato de imagen no permitido. Usa JPG, PNG o WEBP.");
+
+            if (contenidoArchivo.Length > tamanoMaximoBytes)
+                return (false, "La imagen no puede superar los 4 MB.");
+
+            var nombreArchivo = $"{servicioId}_{Guid.NewGuid()}{extension}";
+            var carpetaDestino = Path.Combine("wwwroot", "uploads", "servicios");
+            Directory.CreateDirectory(carpetaDestino);
+
+            var rutaFisica = Path.Combine(carpetaDestino, nombreArchivo);
+            File.WriteAllBytes(rutaFisica, contenidoArchivo);
+
+            if (!string.IsNullOrWhiteSpace(servicio.ImagenUrl))
+            {
+                var rutaAnterior = Path.Combine("wwwroot", servicio.ImagenUrl.TrimStart('/'));
+                if (File.Exists(rutaAnterior))
+                    File.Delete(rutaAnterior);
+            }
+
+            servicio.ImagenUrl = $"/uploads/servicios/{nombreArchivo}";
+            _servicioRepository.GuardarCambios();
+
+            return (true, "Imagen actualizada correctamente.");
         }
     }
 }
