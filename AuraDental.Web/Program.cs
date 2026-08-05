@@ -28,6 +28,7 @@ builder.Services.AddHttpClient<IEmailService, EmailService>();
 builder.Services.AddScoped<ISugerenciaService, SugerenciaService>();
 builder.Services.AddScoped<IExpedienteService, ExpedienteService>();
 builder.Services.AddScoped<IResenaService, ResenaService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>
 {

@@ -13,6 +13,14 @@ namespace AuraDental.Web.Controllers
             var resenas = resenaService.ObtenerTodas();
             return View(resenas);
         }
+
+        [SessionAuthorize(RolRequerido = "Administrador")]
+        public IActionResult Graficos([FromServices] IDashboardService dashboardService)
+        {
+            var estadisticas = dashboardService.ObtenerEstadisticas();
+            return View(estadisticas);
+        }
+
         public IActionResult Index()
         {
             ViewBag.NombreCompleto = HttpContext.Session.GetString("NombreCompleto");

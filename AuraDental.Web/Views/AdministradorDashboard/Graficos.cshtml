@@ -1,0 +1,91 @@
+﻿@model AuraDental.Aplicacion.Dtos.EstadisticasDashboardDto
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Dashboard con Gráficos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dashboard</h2>
+        <a asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card p-3 text-center">
+                <p class="text-muted mb-1">Citas Completadas</p>
+                <h3>@Model.TotalCitasCompletadas</h3>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 text-center">
+                <p class="text-muted mb-1">Ingresos Estimados</p>
+                <h3>@Model.IngresosEstimados.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card p-3">
+                <h5 class="mb-3">Citas por Semana</h5>
+                <canvas id="graficoCitas"></canvas>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card p-3">
+                <h5 class="mb-3">Servicios Más Solicitados</h5>
+                <canvas id="graficoServicios"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        const etiquetasSemanas = @Html.Raw(JsonSerializer.Serialize(Model.EtiquetasSemanas));
+        const citasPorSemana = @Html.Raw(JsonSerializer.Serialize(Model.CitasPorSemana));
+        const nombresServicios = @Html.Raw(JsonSerializer.Serialize(Model.NombresServicios));
+        const cantidadPorServicio = @Html.Raw(JsonSerializer.Serialize(Model.CantidadPorServicio));
+
+        new Chart(document.getElementById('graficoCitas'), {
+            type: 'line',
+            data: {
+                labels: etiquetasSemanas,
+                datasets: [{
+                    label: 'Citas',
+                    data: citasPorSemana,
+                    borderColor: '#14786C',
+                    backgroundColor: 'rgba(20, 120, 108, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        new Chart(document.getElementById('graficoServicios'), {
+            type: 'doughnut',
+            data: {
+                labels: nombresServicios,
+                datasets: [{
+                    data: cantidadPorServicio,
+                    backgroundColor: ['#14786C', '#2FA894', '#E8A33D', '#C9E7E1', '#0B4A42']
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    </script>
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
