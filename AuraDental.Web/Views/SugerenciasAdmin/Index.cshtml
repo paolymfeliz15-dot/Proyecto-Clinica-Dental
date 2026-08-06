@@ -1,0 +1,43 @@
+﻿@model List<AuraDental.Dominio.Entidades.Sugerencia>
+
+@{
+    ViewData["Title"] = "Sugerencias de Pacientes";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Sugerencias de Pacientes</h2>
+        <a asp-controller="AdministradorDashboard" asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Todavía no hay sugerencias registradas.</p>
+    }
+    else
+    {
+        @foreach (var sugerencia in Model)
+        {
+            <div class="card p-3 mb-3 @(sugerencia.Leida ? "" : "border-primary")">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>@sugerencia.Paciente.NombreCompleto</strong>
+                        @if (!sugerencia.Leida)
+                        {
+                            <span class="badge bg-primary ms-2">Nueva</span>
+                        }
+                        <p class="mb-1 mt-2">@sugerencia.Mensaje</p>
+                        <span class="text-muted small">@sugerencia.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    @if (!sugerencia.Leida)
+                    {
+                        <form asp-action="MarcarLeida" method="post">
+                            <input type="hidden" name="id" value="@sugerencia.SugerenciaId" />
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Marcar como leída</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

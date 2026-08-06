@@ -1,0 +1,11 @@
+﻿@model int
+
+<a class="nav-link position-relative" asp-controller="SugerenciasAdmin" asp-action="Index" title="Sugerencias">
+    <span style="font-size: 1.2rem;">🔔</span>
+    @if (Model > 0)
+    {
+        <span class="badge rounded-pill bg-danger position-absolute" style="top: -2px; right: -6px; font-size: 0.65rem;">
+            @Model
+        </span>
+    }
+</a>

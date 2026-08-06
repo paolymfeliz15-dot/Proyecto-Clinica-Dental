@@ -44,6 +44,13 @@
                             <li class="nav-item"><a class="nav-link" asp-controller="Disponibilidad" asp-action="Index">Disponibilidad</a></li>
                             <li class="nav-item"><a class="nav-link" asp-controller="Citas" asp-action="Index">Mis Citas</a></li>
                         }
+
+                        @if (rolActual == "Administrador")
+                        {
+                            <li class="nav-item d-flex align-items-center">
+                                @await Component.InvokeAsync("CampanaSugerencias")
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
                         @if (rolActual != null)
