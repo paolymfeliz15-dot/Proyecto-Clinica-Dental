@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Registrar Expediente";
+}
+
+<div class="container mt-4" style="max-width: 550px;">
+    <h2>Registrar Expediente</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form method="post" asp-action="Crear">
+        <input type="hidden" name="citaId" value="@ViewBag.CitaId" />
+
+        <div class="mb-3">
+            <label class="form-label">Diagnóstico</label>
+            <textarea name="diagnostico" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tratamiento aplicado</label>
+            <textarea name="tratamiento" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Observaciones (opcional)</label>
+            <textarea name="observaciones" class="form-control" rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Expediente</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,0 +1,48 @@
+﻿@model List<AuraDental.Dominio.Entidades.Cita>
+
+@{
+    ViewData["Title"] = "Registrar Expedientes";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Citas Pendientes de Expediente</h2>
+        <a asp-controller="AsistenteDashboard" asp-action="Index" class="btn btn-link">← Volver al panel</a>
+    </div>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">@TempData["Mensaje"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No hay citas pendientes de registrar expediente en este momento.</p>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Servicio</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cita in Model)
+                {
+                    <tr>
+                        <td>@cita.BloqueAgenda.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@cita.Paciente.NombreCompleto</td>
+                        <td>@cita.Servicio.Nombre</td>
+                        <td>
+                            <a asp-action="Crear" asp-route-citaId="@cita.CitaId" class="btn btn-sm btn-primary">Registrar Expediente</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
