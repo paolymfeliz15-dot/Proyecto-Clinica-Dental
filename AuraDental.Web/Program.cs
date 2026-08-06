@@ -29,6 +29,7 @@ builder.Services.AddScoped<ISugerenciaService, SugerenciaService>();
 builder.Services.AddScoped<IExpedienteService, ExpedienteService>();
 builder.Services.AddScoped<IResenaService, ResenaService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IPagoService, PagoService>();
 // Habilitar el servicio de sesiones
 builder.Services.AddSession(options =>
 {
