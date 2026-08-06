@@ -19,7 +19,7 @@ namespace AuraDental.Dominio.Entidades
         public int BloqueAgendaId { get; set; }
         public BloqueAgenda BloqueAgenda { get; set; } = null!;
 
-        public string Estado { get; set; } = "Agendada"; // Agendada, Cancelada, Completada
+        public EstadoCita Estado { get; set; } = EstadoCita.Agendada;
 
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
     }

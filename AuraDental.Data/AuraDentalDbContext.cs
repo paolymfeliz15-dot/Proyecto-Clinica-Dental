@@ -109,6 +109,10 @@ namespace AuraDental.Infraestructura
                 .HasForeignKey(s => s.PacienteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Cita>()
+                .Property(c => c.Estado)
+                .HasConversion<string>();
+
             modelBuilder.Entity<Usuario>().HasData(
                 new Usuario
                 {
