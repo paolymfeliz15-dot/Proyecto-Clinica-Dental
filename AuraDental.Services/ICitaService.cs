@@ -8,6 +8,7 @@ namespace AuraDental.Aplicacion
         List<Cita> ObtenerPorPaciente(int pacienteId);
         List<Cita> ObtenerPorRangoFechas(DateTime desde, DateTime hasta);
         Cita? ObtenerPorId(int id);
+        Cita? ObtenerProximaCitaParaRecordatorio(int pacienteId);
         (bool exito, string mensaje) Cancelar(int citaId, int pacienteId);
         (bool exito, string mensaje) Agendar(int pacienteId, int servicioId, int bloqueAgendaId);
     }

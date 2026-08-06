@@ -48,6 +48,25 @@ namespace AuraDental.Aplicacion
                 .ToList();
         }
 
+        public Cita? ObtenerProximaCitaParaRecordatorio(int pacienteId)
+        {
+            var ahora = DateTime.Now;
+            var limite = ahora.AddHours(48);
+
+            return _citaRepository.Consultar()
+                .Include(c => c.Servicio)
+                .Include(c => c.BloqueAgenda)
+                .Where(c => c.PacienteId == pacienteId
+                         && c.Estado == "Agendada"
+                         && c.BloqueAgenda.Fecha >= ahora.Date
+                         && c.BloqueAgenda.Fecha <= limite.Date)
+                .AsEnumerable() // el cálculo exacto de fecha+hora combinadas se hace en memoria
+                .Where(c => (c.BloqueAgenda.Fecha.Date + c.BloqueAgenda.HoraInicio) >= ahora
+                         && (c.BloqueAgenda.Fecha.Date + c.BloqueAgenda.HoraInicio) <= limite)
+                .OrderBy(c => c.BloqueAgenda.Fecha).ThenBy(c => c.BloqueAgenda.HoraInicio)
+                .FirstOrDefault();
+        }
+
         public (bool exito, string mensaje) Agendar(int pacienteId, int servicioId, int bloqueAgendaId)
         {
             var servicio = _servicioRepository.ObtenerPorId(servicioId);

@@ -1,11 +1,29 @@
 ﻿@{
     ViewData["Title"] = "Panel de Paciente";
 }
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Bienvenido/a, @ViewBag.NombreCompleto</h2>
         <a asp-controller="Cuenta" asp-action="Logout" class="btn btn-outline-danger">Cerrar sesión</a>
     </div>
+
+    @* --- Inicio del nuevo aviso de cita --- *@
+    @{
+        var proximaCita = ViewBag.ProximaCita as AuraDental.Dominio.Entidades.Cita;
+    }
+
+    @if (proximaCita != null)
+    {
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
+            <span style="font-size: 1.3rem;">🔔</span>
+            <div>
+                <strong>Recordatorio:</strong> tienes una cita de <strong>@proximaCita.Servicio.Nombre</strong>
+                el @proximaCita.BloqueAgenda.Fecha.ToString("dd/MM/yyyy") a las @proximaCita.BloqueAgenda.HoraInicio.ToString(@"hh\:mm").
+            </div>
+        </div>
+    }
+    @* --- Fin del aviso --- *@
 
     <h5 class="text-muted mb-3">Panel de Paciente</h5>
 
