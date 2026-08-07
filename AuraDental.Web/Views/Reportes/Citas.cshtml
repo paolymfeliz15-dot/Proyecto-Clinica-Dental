@@ -51,11 +51,11 @@
                         <td>@cita.Paciente.NombreCompleto</td>
                         <td>@cita.Servicio.Nombre</td>
                         <td>
-                            @if (cita.Estado == "Agendada")
+                            @if (cita.Estado == AuraDental.Dominio.Entidades.EstadoCita.Agendada)
                             {
                                 <span class="badge bg-primary">Agendada</span>
                             }
-                            else if (cita.Estado == "Cancelada")
+                            else if (cita.Estado == AuraDental.Dominio.Entidades.EstadoCita.Cancelada)
                             {
                                 <span class="badge bg-secondary">Cancelada</span>
                             }

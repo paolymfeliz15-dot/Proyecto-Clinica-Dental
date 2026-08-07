@@ -1,4 +1,6 @@
-﻿using AuraDental.Dominio.Entidades;
+﻿using AuraDental.Aplicacion.Dtos;
+using AuraDental.Aplicacion.Mappers;
+using AuraDental.Dominio.Entidades;
 using AuraDental.Dominio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,20 +15,24 @@ namespace AuraDental.Aplicacion
             _usuarioRepository = usuarioRepository;
         }
 
-        public List<Usuario> ObtenerTodos()
+        public List<UsuarioResumenDto> ObtenerTodos()
         {
-            return _usuarioRepository.Consultar()
+            var usuarios = _usuarioRepository.Consultar()
                 .Include(u => u.Rol)
                 .Where(u => u.Rol.Nombre == "Administrador" || u.Rol.Nombre == "Asistente")
                 .OrderBy(u => u.NombreCompleto)
                 .ToList();
+
+            return UsuarioMapper.AResumenLista(usuarios);
         }
 
-        public Usuario? ObtenerPorId(int id)
+        public UsuarioResumenDto? ObtenerPorId(int id)
         {
-            return _usuarioRepository.Consultar()
+            var usuario = _usuarioRepository.Consultar()
                 .Include(u => u.Rol)
                 .FirstOrDefault(u => u.UsuarioId == id);
+
+            return usuario == null ? null : UsuarioMapper.AResumen(usuario);
         }
 
         public bool ExisteEmail(string email, int? idExcluir = null)
@@ -35,9 +41,10 @@ namespace AuraDental.Aplicacion
                 .Any(u => u.Email == email && u.UsuarioId != idExcluir);
         }
 
-        public void Crear(Usuario usuario, string password)
+        public void Crear(PersonalDto datos)
         {
-            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            var usuario = UsuarioMapper.APersonalNuevo(datos);
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(datos.Password ?? string.Empty);
             usuario.Activo = true;
             usuario.FechaCreacion = DateTime.Now;
 
@@ -45,23 +52,12 @@ namespace AuraDental.Aplicacion
             _usuarioRepository.GuardarCambios();
         }
 
-        public void Actualizar(Usuario usuario)
+        public void Actualizar(PersonalDto datos)
         {
-            var existente = _usuarioRepository.ObtenerPorId(usuario.UsuarioId);
+            var existente = _usuarioRepository.ObtenerPorId(datos.UsuarioId);
             if (existente == null) return;
 
-            existente.NombreCompleto = usuario.NombreCompleto;
-            existente.Email = usuario.Email;
-            existente.RolId = usuario.RolId;
-            existente.Apellidos = usuario.Apellidos;
-            existente.Telefono = usuario.Telefono;
-            existente.Cedula = usuario.Cedula;
-            existente.Direccion = usuario.Direccion;
-            existente.Pais = usuario.Pais;
-            existente.EstadoProvincia = usuario.EstadoProvincia;
-            existente.Ciudad = usuario.Ciudad;
-            existente.Sector = usuario.Sector;
-
+            UsuarioMapper.ActualizarDesdePersonalDto(existente, datos);
             _usuarioRepository.GuardarCambios();
         }
 

@@ -15,7 +15,7 @@ namespace AuraDental.Aplicacion
 
         (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email);
 
-        (bool exito, string mensaje) RegistrarPaciente(Usuario datosUsuario, string password);
+        (bool exito, string mensaje) RegistrarPaciente(AuraDental.Aplicacion.Dtos.RegistroPacienteDto datos);
 
         (bool exito, string mensaje) VerificarCorreo(string token);
 

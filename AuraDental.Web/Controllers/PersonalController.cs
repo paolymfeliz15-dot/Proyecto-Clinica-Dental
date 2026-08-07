@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AuraDental.Aplicacion;
+using AuraDental.Aplicacion.Dtos;
 using AuraDental.Infraestructura;
-using AuraDental.Dominio.Entidades;
 using AuraDental.Web.Filters;
-using Microsoft.EntityFrameworkCore;
 
 namespace AuraDental.Web.Controllers
 {
@@ -21,46 +20,40 @@ namespace AuraDental.Web.Controllers
             _paisService = paisService;
         }
 
-        // GET: /Personal
         public IActionResult Index()
         {
             var personal = _personalService.ObtenerTodos();
             return View(personal);
         }
 
-        // GET: /Personal/Detalles/5
         public IActionResult Detalles(int id)
         {
             var usuario = _personalService.ObtenerPorId(id);
             if (usuario == null) return NotFound();
-
             return View(usuario);
         }
 
-        // GET: /Personal/Crear
         public async Task<IActionResult> Crear()
         {
             CargarRolesPersonal();
             ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
-            return View();
+            return View(new PersonalDto());
         }
 
-        // POST: /Personal/Crear
         [HttpPost]
-        public IActionResult Crear(Usuario usuario, string password)
+        public IActionResult Crear(PersonalDto datos)
         {
-            if (_personalService.ExisteEmail(usuario.Email))
+            if (_personalService.ExisteEmail(datos.Email))
             {
                 ViewBag.Error = "Ese correo ya está registrado.";
                 CargarRolesPersonal();
-                return View(usuario);
+                return View(datos);
             }
 
-            _personalService.Crear(usuario, password);
+            _personalService.Crear(datos);
             return RedirectToAction("Index");
         }
 
-        // GET: /Personal/Editar/5
         public async Task<IActionResult> Editar(int id)
         {
             var usuario = _personalService.ObtenerPorId(id);
@@ -79,25 +72,39 @@ namespace AuraDental.Web.Controllers
             else
                 ViewBag.CiudadesActuales = new List<string>();
 
-            return View(usuario);
+            // Convertimos el DTO de salida en el DTO de entrada que el formulario necesita
+            var datos = new PersonalDto
+            {
+                UsuarioId = usuario.UsuarioId,
+                NombreCompleto = usuario.NombreCompleto,
+                Apellidos = usuario.Apellidos,
+                Cedula = usuario.Cedula,
+                Telefono = usuario.Telefono,
+                Email = usuario.Email,
+                Direccion = usuario.Direccion,
+                Pais = usuario.Pais,
+                EstadoProvincia = usuario.EstadoProvincia,
+                Ciudad = usuario.Ciudad,
+                Sector = usuario.Sector
+            };
+
+            return View(datos);
         }
 
-        // POST: /Personal/Editar/5
         [HttpPost]
-        public IActionResult Editar(Usuario usuario)
+        public IActionResult Editar(PersonalDto datos)
         {
-            if (_personalService.ExisteEmail(usuario.Email, usuario.UsuarioId))
+            if (_personalService.ExisteEmail(datos.Email, datos.UsuarioId))
             {
                 ViewBag.Error = "Ese correo ya lo usa otro usuario.";
                 CargarRolesPersonal();
-                return View(usuario);
+                return View(datos);
             }
 
-            _personalService.Actualizar(usuario);
+            _personalService.Actualizar(datos);
             return RedirectToAction("Index");
         }
 
-        // POST: /Personal/CambiarEstado/5
         [HttpPost]
         public IActionResult CambiarEstado(int id, bool activo)
         {
@@ -107,8 +114,6 @@ namespace AuraDental.Web.Controllers
 
         private void CargarRolesPersonal()
         {
-            // Solo se pueden crear Administradores o Asistentes desde aquí
-            // (los Pacientes se registran desde /Cuenta/Registro)
             ViewBag.Roles = _context.Roles
                 .Where(r => r.Nombre == "Administrador" || r.Nombre == "Asistente")
                 .ToList();

@@ -1,4 +1,4 @@
-﻿@model AuraDental.Dominio.Entidades.Usuario
+﻿@model AuraDental.Aplicacion.Dtos.UsuarioResumenDto
 
 @{
     ViewData["Title"] = "Detalles de Personal";
@@ -15,7 +15,7 @@
         <dd class="col-sm-8">@Model.Email</dd>
 
         <dt class="col-sm-4">Rol</dt>
-        <dd class="col-sm-8">@Model.Rol.Nombre</dd>
+        <dd class="col-sm-8">@Model.NombreRol</dd>
 
         <dt class="col-sm-4">Estado</dt>
         <dd class="col-sm-8">@(Model.Activo ? "Activo" : "Inactivo")</dd>

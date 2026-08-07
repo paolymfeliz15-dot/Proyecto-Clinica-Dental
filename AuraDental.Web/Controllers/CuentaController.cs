@@ -1,10 +1,11 @@
+using AuraDental.Aplicacion;
+using AuraDental.Aplicacion.Dtos;
+using AuraDental.Dominio.Entidades;
+using AuraDental.Infraestructura;
 using AuraDental.Web.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using AuraDental.Aplicacion;
-using AuraDental.Infraestructura;
-using AuraDental.Dominio.Entidades;
-using Microsoft.AspNetCore.Http;
 using System.IO;
 
 namespace AuraDental.Web.Controllers
@@ -90,19 +91,19 @@ namespace AuraDental.Web.Controllers
         public async Task<IActionResult> Registro()
         {
             ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
-            return View();
+            return View(new RegistroPacienteDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registro(Usuario datosUsuario, string password)
+        public async Task<IActionResult> Registro(RegistroPacienteDto datos)
         {
-            var (exito, mensaje) = _authService.RegistrarPaciente(datosUsuario, password);
+            var (exito, mensaje) = _authService.RegistrarPaciente(datos);
 
             if (!exito)
             {
                 ViewBag.Error = mensaje;
                 ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
-                return View(datosUsuario);
+                return View(datos);
             }
 
             return RedirectToAction("Login");

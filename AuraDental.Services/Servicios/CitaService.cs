@@ -57,7 +57,7 @@ namespace AuraDental.Aplicacion
                 .Include(c => c.Servicio)
                 .Include(c => c.BloqueAgenda)
                 .Where(c => c.PacienteId == pacienteId
-                         && c.Estado == "Agendada"
+                         && c.Estado == EstadoCita.Agendada  
                          && c.BloqueAgenda.Fecha >= ahora.Date
                          && c.BloqueAgenda.Fecha <= limite.Date)
                 .AsEnumerable() // el cálculo exacto de fecha+hora combinadas se hace en memoria
@@ -91,7 +91,7 @@ namespace AuraDental.Aplicacion
                 PacienteId = pacienteId,
                 ServicioId = servicioId,
                 BloqueAgendaId = bloqueAgendaId,
-                Estado = "Agendada",
+                Estado = EstadoCita.Agendada,
                 FechaCreacion = DateTime.Now
             };
 
@@ -115,13 +115,13 @@ namespace AuraDental.Aplicacion
             if (cita.PacienteId != pacienteId)
                 return (false, "No tienes permiso para cancelar esta cita.");
 
-            if (cita.Estado == "Cancelada")
+            if (cita.Estado == EstadoCita.Cancelada)
                 return (false, "Esta cita ya estaba cancelada.");
 
             if (cita.BloqueAgenda.Fecha < DateTime.Today)
                 return (false, "No se puede cancelar una cita que ya pasó.");
 
-            cita.Estado = "Cancelada";
+            cita.Estado = EstadoCita.Cancelada;
             cita.BloqueAgenda.Disponible = true;
 
             _citaRepository.GuardarCambios();

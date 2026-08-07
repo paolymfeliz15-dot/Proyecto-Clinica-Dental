@@ -1,4 +1,4 @@
-﻿@model AuraDental.Dominio.Entidades.Usuario
+﻿@model AuraDental.Aplicacion.Dtos.PersonalDto
 
 @{
     ViewData["Title"] = "Editar Personal";
@@ -106,7 +106,7 @@
                 <select name="RolId" class="form-select" required>
                     @foreach (var rol in ViewBag.Roles)
                     {
-                        <option value="@rol.RolId" selected="@(rol.RolId == Model.RolId)">@rol.Nombre</option>
+                        <option value="@rol.RolId">@rol.Nombre</option>
                     }
                 </select>
             </div>

@@ -49,9 +49,9 @@ namespace AuraDental.Aplicacion
             dto.CantidadPorServicio = topServicios.Select(s => s.Cantidad).ToList();
 
             // ===== Ingresos estimados (solo citas completadas) =====
-            dto.TotalCitasCompletadas = citas.Count(c => c.Estado == "Completada");
+            dto.TotalCitasCompletadas = citas.Count(c => c.Estado == EstadoCita.Completada);
             dto.IngresosEstimados = citas
-                .Where(c => c.Estado == "Completada")
+                .Where(c => c.Estado == EstadoCita.Completada)
                 .Sum(c => c.Servicio.Precio);
 
             return dto;

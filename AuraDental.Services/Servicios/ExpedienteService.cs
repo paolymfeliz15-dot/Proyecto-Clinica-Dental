@@ -39,7 +39,7 @@ namespace AuraDental.Aplicacion
                 .Include(c => c.Paciente)
                 .Include(c => c.Servicio)
                 .Include(c => c.BloqueAgenda)
-                .Where(c => c.Estado == "Agendada"
+                .Where(c => c.Estado == EstadoCita.Agendada
                          && c.BloqueAgenda.Fecha <= DateTime.Today
                          && !idsConExpediente.Contains(c.CitaId))
                 .OrderBy(c => c.BloqueAgenda.Fecha)
@@ -55,7 +55,7 @@ namespace AuraDental.Aplicacion
             if (cita == null)
                 return (false, "La cita no existe.");
 
-            if (cita.Estado != "Agendada")
+            if (cita.Estado != EstadoCita.Agendada)
                 return (false, "Solo se puede registrar un expediente para una cita Agendada.");
 
             var expediente = new Expediente
@@ -70,7 +70,7 @@ namespace AuraDental.Aplicacion
             };
 
             // El registro del expediente es lo que marca la cita como Completada
-            cita.Estado = "Completada";
+            cita.Estado = EstadoCita.Completada;
 
             _expedienteRepository.Agregar(expediente);
             _expedienteRepository.GuardarCambios();

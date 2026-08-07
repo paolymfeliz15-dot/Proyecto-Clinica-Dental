@@ -1,4 +1,4 @@
-﻿@model List<AuraDental.Dominio.Entidades.Usuario>
+﻿@model List<AuraDental.Aplicacion.Dtos.UsuarioResumenDto>
 
 @{
     ViewData["Title"] = "Gestionar Personal";
@@ -26,7 +26,7 @@
                 <tr>
                     <td>@usuario.NombreCompleto</td>
                     <td>@usuario.Email</td>
-                    <td>@usuario.Rol.Nombre</td>
+                    <td>@usuario.NombreRol</td>
                     <td>
                         @if (usuario.Activo)
                         {

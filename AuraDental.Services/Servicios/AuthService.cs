@@ -1,4 +1,6 @@
-﻿using AuraDental.Dominio.Entidades;
+﻿using AuraDental.Aplicacion.Dtos;
+using AuraDental.Aplicacion.Mappers;
+using AuraDental.Dominio.Entidades;
 using AuraDental.Dominio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,27 +104,28 @@ namespace AuraDental.Aplicacion
             return (true, "Nombre de usuario actualizado correctamente.");
         }
 
-        public (bool exito, string mensaje) RegistrarPaciente(Usuario datosUsuario, string password)
+        public (bool exito, string mensaje) RegistrarPaciente(RegistroPacienteDto datos)
         {
-            if (ExisteEmail(datosUsuario.Email))
+            if (ExisteEmail(datos.Email))
                 return (false, "Ese correo ya está registrado.");
 
-            if (!string.IsNullOrWhiteSpace(datosUsuario.Cedula) &&
-                _usuarioRepository.Consultar().Any(u => u.Cedula == datosUsuario.Cedula))
+            if (!string.IsNullOrWhiteSpace(datos.Cedula) &&
+                _usuarioRepository.Consultar().Any(u => u.Cedula == datos.Cedula))
                 return (false, "Ya existe una cuenta registrada con esa cédula.");
 
-            datosUsuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            datosUsuario.RolId = 2;
-            datosUsuario.Activo = true;
-            datosUsuario.FechaCreacion = DateTime.Now;
-            datosUsuario.EmailVerificado = false;
-            datosUsuario.TokenVerificacion = Guid.NewGuid().ToString("N");
-            datosUsuario.TokenExpiracion = DateTime.Now.AddHours(24);
+            var usuario = UsuarioMapper.ARegistroPaciente(datos);
+            usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(datos.Password);
+            usuario.RolId = 2;
+            usuario.Activo = true;
+            usuario.FechaCreacion = DateTime.Now;
+            usuario.EmailVerificado = false;
+            usuario.TokenVerificacion = Guid.NewGuid().ToString("N");
+            usuario.TokenExpiracion = DateTime.Now.AddHours(24);
 
-            _usuarioRepository.Agregar(datosUsuario);
+            _usuarioRepository.Agregar(usuario);
             _usuarioRepository.GuardarCambios();
 
-            _ = _emailService.EnviarCorreoVerificacionAsync(datosUsuario.Email, datosUsuario.NombreCompleto, datosUsuario.TokenVerificacion);
+            _ = _emailService.EnviarCorreoVerificacionAsync(usuario.Email, usuario.NombreCompleto, usuario.TokenVerificacion);
 
             return (true, "Registro exitoso. Revisa tu correo para verificar tu cuenta antes de iniciar sesión.");
         }
