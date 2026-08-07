@@ -2,6 +2,7 @@
 using AuraDental.Aplicacion.Mappers;
 using AuraDental.Dominio.Entidades;
 using AuraDental.Dominio.Interfaces;
+using AuraDental.Dominio.ObjetosValor;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuraDental.Aplicacion
@@ -106,14 +107,23 @@ namespace AuraDental.Aplicacion
 
         public (bool exito, string mensaje) RegistrarPaciente(RegistroPacienteDto datos)
         {
-            if (ExisteEmail(datos.Email))
+            var (emailValido, mensajeEmail, email) = Email.Crear(datos.Email);
+            if (!emailValido)
+                return (false, mensajeEmail);
+
+            var (cedulaValida, mensajeCedula, cedula) = Cedula.Crear(datos.Cedula);
+            if (!cedulaValida)
+                return (false, mensajeCedula);
+
+            if (ExisteEmail(email!.Valor))
                 return (false, "Ese correo ya está registrado.");
 
-            if (!string.IsNullOrWhiteSpace(datos.Cedula) &&
-                _usuarioRepository.Consultar().Any(u => u.Cedula == datos.Cedula))
+            if (_usuarioRepository.Consultar().Any(u => u.Cedula == cedula!.Valor))
                 return (false, "Ya existe una cuenta registrada con esa cédula.");
 
             var usuario = UsuarioMapper.ARegistroPaciente(datos);
+            usuario.Email = email.Valor;       // usamos el valor ya validado y normalizado
+            usuario.Cedula = cedula!.Valor;    // en vez del texto crudo del formulario
             usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(datos.Password);
             usuario.RolId = 2;
             usuario.Activo = true;

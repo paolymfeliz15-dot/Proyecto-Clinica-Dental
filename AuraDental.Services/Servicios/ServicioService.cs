@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using AuraDental.Dominio.Entidades;
 using AuraDental.Dominio.Interfaces;
+using AuraDental.Dominio.ObjetosValor;
 
 namespace AuraDental.Aplicacion
 {
@@ -28,11 +29,18 @@ namespace AuraDental.Aplicacion
                 .Any(s => s.Nombre == nombre && s.ServicioId != idExcluir);
         }
 
-        public void Crear(Servicio servicio)
+        public (bool exito, string mensaje) Crear(Servicio servicio)
         {
+            var (dineroValido, mensajeDinero, dinero) = Dinero.Crear(servicio.Precio);
+            if (!dineroValido)
+                return (false, mensajeDinero);
+
+            servicio.Precio = dinero!.Monto;
             servicio.Activo = true;
             _servicioRepository.Agregar(servicio);
             _servicioRepository.GuardarCambios();
+
+            return (true, "Servicio creado correctamente.");
         }
 
         public void Actualizar(Servicio servicio)
