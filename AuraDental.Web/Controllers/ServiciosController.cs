@@ -47,7 +47,14 @@ namespace AuraDental.Web.Controllers
                 return View(servicio);
             }
 
-            _servicioService.Crear(servicio);
+            var (exito, mensaje) = _servicioService.Crear(servicio);
+
+            if (!exito)
+            {
+                ViewBag.Error = mensaje;
+                return View(servicio);
+            }
+
             return RedirectToAction("Index");
         }
 

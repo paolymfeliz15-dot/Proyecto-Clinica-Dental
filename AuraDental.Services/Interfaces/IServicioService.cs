@@ -11,7 +11,7 @@ namespace AuraDental.Aplicacion
     {
         List<Servicio> ObtenerTodos();
         Servicio? ObtenerPorId(int id);
-        void Crear(Servicio servicio);
+        (bool exito, string mensaje) Crear(Servicio servicio);
         void Actualizar(Servicio servicio);
         void CambiarEstado(int id, bool activo);
         bool ExisteNombre(string nombre, int? idExcluir = null);
