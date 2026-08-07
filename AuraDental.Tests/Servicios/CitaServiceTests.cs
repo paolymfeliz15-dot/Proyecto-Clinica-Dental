@@ -109,5 +109,64 @@ namespace AuraDental.Tests.Servicios
             _citaRepoMock.Verify(r => r.Agregar(It.IsAny<Cita>()), Times.Once);
             _citaRepoMock.Verify(r => r.GuardarCambios(), Times.Once);
         }
+
+        [Fact]
+        public void Cancelar_ConCitaDeOtroPaciente_DebeRetornarError()
+        {
+            var bloque = new BloqueAgenda { Fecha = DateTime.Today.AddDays(1) };
+            var cita = new Cita { CitaId = 1, PacienteId = 5, BloqueAgenda = bloque, Estado = EstadoCita.Agendada };
+
+            _citaRepoMock.Setup(r => r.Consultar()).Returns(new List<Cita> { cita }.AsQueryable());
+
+            // Un paciente distinto (id 99) intenta cancelar la cita del paciente 5
+            var (exito, mensaje) = _citaService.Cancelar(1, pacienteId: 99);
+
+            Assert.False(exito);
+            Assert.Contains("no tienes permiso", mensaje.ToLower());
+        }
+
+        [Fact]
+        public void Cancelar_ConCitaYaCancelada_DebeRetornarError()
+        {
+            var bloque = new BloqueAgenda { Fecha = DateTime.Today.AddDays(1) };
+            var cita = new Cita { CitaId = 1, PacienteId = 5, BloqueAgenda = bloque, Estado = EstadoCita.Cancelada };
+
+            _citaRepoMock.Setup(r => r.Consultar()).Returns(new List<Cita> { cita }.AsQueryable());
+
+            var (exito, mensaje) = _citaService.Cancelar(1, pacienteId: 5);
+
+            Assert.False(exito);
+            Assert.Contains("ya estaba cancelada", mensaje);
+        }
+
+        [Fact]
+        public void Cancelar_ConCitaQueYaPaso_DebeRetornarError()
+        {
+            var bloque = new BloqueAgenda { Fecha = DateTime.Today.AddDays(-2) };
+            var cita = new Cita { CitaId = 1, PacienteId = 5, BloqueAgenda = bloque, Estado = EstadoCita.Agendada };
+
+            _citaRepoMock.Setup(r => r.Consultar()).Returns(new List<Cita> { cita }.AsQueryable());
+
+            var (exito, mensaje) = _citaService.Cancelar(1, pacienteId: 5);
+
+            Assert.False(exito);
+            Assert.Contains("ya pasó", mensaje);
+        }
+
+        [Fact]
+        public void Cancelar_ConDatosValidos_DebeLiberarElBloqueDeAgenda()
+        {
+            var bloque = new BloqueAgenda { Fecha = DateTime.Today.AddDays(1), Disponible = false };
+            var cita = new Cita { CitaId = 1, PacienteId = 5, BloqueAgenda = bloque, Estado = EstadoCita.Agendada };
+
+            _citaRepoMock.Setup(r => r.Consultar()).Returns(new List<Cita> { cita }.AsQueryable());
+
+            var (exito, _) = _citaService.Cancelar(1, pacienteId: 5);
+
+            Assert.True(exito);
+            Assert.Equal(EstadoCita.Cancelada, cita.Estado);
+            Assert.True(bloque.Disponible); // el horario vuelve a quedar libre
+            _citaRepoMock.Verify(r => r.GuardarCambios(), Times.Once);
+        }
     }
 }
