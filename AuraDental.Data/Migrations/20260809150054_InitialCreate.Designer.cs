@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuraDental.Infraestructura.Migrations
 {
     [DbContext(typeof(AuraDentalDbContext))]
-    [Migration("20260730202019_VerificarAdminSemilla")]
-    partial class VerificarAdminSemilla
+    [Migration("20260809150054_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace AuraDental.Infraestructura.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AuraDental.Data.Entities.BloqueAgenda", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.BloqueAgenda", b =>
                 {
                     b.Property<int>("BloqueAgendaId")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace AuraDental.Infraestructura.Migrations
                     b.ToTable("BloquesAgenda");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Cita", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Cita", b =>
                 {
                     b.Property<int>("CitaId")
                         .ValueGeneratedOnAdd()
@@ -90,30 +90,77 @@ namespace AuraDental.Infraestructura.Migrations
                     b.ToTable("Citas");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Provincia", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Expediente", b =>
                 {
-                    b.Property<int>("ProvinciaId")
+                    b.Property<int>("ExpedienteId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProvinciaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpedienteId"));
 
-                    b.Property<bool>("Activa")
-                        .HasColumnType("bit");
+                    b.Property<int?>("CitaId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("Diagnostico")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProvinciaId");
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("Nombre")
-                        .IsUnique();
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Provincias");
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RegistradoPorUsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tratamiento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ExpedienteId");
+
+                    b.HasIndex("CitaId");
+
+                    b.HasIndex("PacienteId");
+
+                    b.HasIndex("RegistradoPorUsuarioId");
+
+                    b.ToTable("Expedientes");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Rol", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Resena", b =>
+                {
+                    b.Property<int>("ResenaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ResenaId"));
+
+                    b.Property<int>("Calificacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ResenaId");
+
+                    b.HasIndex("PacienteId");
+
+                    b.ToTable("Resenas");
+                });
+
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Rol", b =>
                 {
                     b.Property<int>("RolId")
                         .ValueGeneratedOnAdd()
@@ -147,7 +194,7 @@ namespace AuraDental.Infraestructura.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Servicio", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Servicio", b =>
                 {
                     b.Property<int>("ServicioId")
                         .ValueGeneratedOnAdd()
@@ -165,6 +212,9 @@ namespace AuraDental.Infraestructura.Migrations
                     b.Property<int>("DuracionMinutos")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -180,7 +230,35 @@ namespace AuraDental.Infraestructura.Migrations
                     b.ToTable("Servicios");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Usuario", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Sugerencia", b =>
+                {
+                    b.Property<int>("SugerenciaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SugerenciaId"));
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Leida")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SugerenciaId");
+
+                    b.HasIndex("PacienteId");
+
+                    b.ToTable("Sugerencias");
+                });
+
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Usuario", b =>
                 {
                     b.Property<int>("UsuarioId")
                         .ValueGeneratedOnAdd()
@@ -272,9 +350,9 @@ namespace AuraDental.Infraestructura.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.BloqueAgenda", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.BloqueAgenda", b =>
                 {
-                    b.HasOne("AuraDental.Data.Entities.Usuario", "Usuario")
+                    b.HasOne("AuraDental.Dominio.Entidades.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -283,21 +361,21 @@ namespace AuraDental.Infraestructura.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Cita", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Cita", b =>
                 {
-                    b.HasOne("AuraDental.Data.Entities.BloqueAgenda", "BloqueAgenda")
+                    b.HasOne("AuraDental.Dominio.Entidades.BloqueAgenda", "BloqueAgenda")
                         .WithMany()
                         .HasForeignKey("BloqueAgendaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AuraDental.Data.Entities.Usuario", "Paciente")
+                    b.HasOne("AuraDental.Dominio.Entidades.Usuario", "Paciente")
                         .WithMany()
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AuraDental.Data.Entities.Servicio", "Servicio")
+                    b.HasOne("AuraDental.Dominio.Entidades.Servicio", "Servicio")
                         .WithMany()
                         .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -310,9 +388,57 @@ namespace AuraDental.Infraestructura.Migrations
                     b.Navigation("Servicio");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Usuario", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Expediente", b =>
                 {
-                    b.HasOne("AuraDental.Data.Entities.Rol", "Rol")
+                    b.HasOne("AuraDental.Dominio.Entidades.Cita", "Cita")
+                        .WithMany()
+                        .HasForeignKey("CitaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AuraDental.Dominio.Entidades.Usuario", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AuraDental.Dominio.Entidades.Usuario", "RegistradoPor")
+                        .WithMany()
+                        .HasForeignKey("RegistradoPorUsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cita");
+
+                    b.Navigation("Paciente");
+
+                    b.Navigation("RegistradoPor");
+                });
+
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Resena", b =>
+                {
+                    b.HasOne("AuraDental.Dominio.Entidades.Usuario", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Paciente");
+                });
+
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Sugerencia", b =>
+                {
+                    b.HasOne("AuraDental.Dominio.Entidades.Usuario", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Paciente");
+                });
+
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Usuario", b =>
+                {
+                    b.HasOne("AuraDental.Dominio.Entidades.Rol", "Rol")
                         .WithMany("Usuarios")
                         .HasForeignKey("RolId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -321,7 +447,7 @@ namespace AuraDental.Infraestructura.Migrations
                     b.Navigation("Rol");
                 });
 
-            modelBuilder.Entity("AuraDental.Data.Entities.Rol", b =>
+            modelBuilder.Entity("AuraDental.Dominio.Entidades.Rol", b =>
                 {
                     b.Navigation("Usuarios");
                 });
