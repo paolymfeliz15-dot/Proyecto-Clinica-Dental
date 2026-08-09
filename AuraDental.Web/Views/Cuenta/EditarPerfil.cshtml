@@ -1,16 +1,19 @@
-﻿@model AuraDental.Dominio.Entidades.Usuario
+﻿@model AuraDental.Aplicacion.Dtos.EditarPerfilDto
 
 @{
     ViewData["Title"] = "Editar Perfil";
-    var fotoActual = string.IsNullOrWhiteSpace(Model.FotoPerfilUrl) ? "/images/default-avatar.svg" : Model.FotoPerfilUrl;
+    var fotoActual = string.IsNullOrWhiteSpace((string?)ViewBag.FotoPerfilUrl) ? "/images/default-avatar.svg" : (string)ViewBag.FotoPerfilUrl;
+    var paisesDisponibles = ViewBag.Paises as List<string> ?? new List<string>();
+    var estadosActuales = ViewBag.EstadosActuales as List<string> ?? new List<string>();
+    var ciudadesActuales = ViewBag.CiudadesActuales as List<string> ?? new List<string>();
 }
 
-<div class="container mt-5" style="max-width: 450px;">
+<div class="container mt-5" style="max-width: 650px;">
     <h2 class="text-center mb-4">Editar Perfil</h2>
 
     <div class="text-center mb-4">
         <img id="previaFoto" src="@fotoActual" alt="Foto de perfil"
-             style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid var(--aura-teal-200);" />
+             style="width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 3px solid var(--aura-navy-100);" />
 
         @if (TempData["ErrorFoto"] != null)
         {
@@ -35,31 +38,106 @@
     }
 
     <form method="post" asp-action="EditarPerfil">
-        <div class="mb-3">
-            <label class="form-label">Nombre completo</label>
-            <input type="text" name="nombreCompleto" class="form-control" value="@Model.NombreCompleto" required />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nombre de usuario / Nombres</label>
+                <input type="text" name="NombreCompleto" class="form-control" value="@Model.NombreCompleto" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Apellidos</label>
+                <input type="text" name="Apellidos" class="form-control" value="@Model.Apellidos" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Cédula</label>
+                <input type="text" name="Cedula" class="form-control" value="@Model.Cedula" placeholder="000-0000000-0" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="tel" name="Telefono" class="form-control" value="@Model.Telefono" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Dirección</label>
+                <input type="text" name="Direccion" class="form-control" value="@Model.Direccion" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">País</label>
+                <select id="PerfilPais" name="Pais" class="form-select">
+                    <option value="">Selecciona...</option>
+                    @foreach (var pais in paisesDisponibles)
+                    {
+                        @if (pais == Model.Pais)
+                        {
+                            <option value="@pais" selected>@pais</option>
+                        }
+                        else
+                        {
+                            <option value="@pais">@pais</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Estado / Provincia</label>
+                <select id="PerfilEstadoProvincia" name="EstadoProvincia" class="form-select">
+                    <option value="">Selecciona...</option>
+                    @foreach (var estado in estadosActuales)
+                    {
+                        @if (estado == Model.EstadoProvincia)
+                        {
+                            <option value="@estado" selected>@estado</option>
+                        }
+                        else
+                        {
+                            <option value="@estado">@estado</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Ciudad</label>
+                <select id="PerfilCiudad" name="Ciudad" class="form-select">
+                    <option value="">Selecciona...</option>
+                    @foreach (var ciudad in ciudadesActuales)
+                    {
+                        @if (ciudad == Model.Ciudad)
+                        {
+                            <option value="@ciudad" selected>@ciudad</option>
+                        }
+                        else
+                        {
+                            <option value="@ciudad">@ciudad</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Sector</label>
+                <input type="text" name="Sector" class="form-control" value="@Model.Sector" />
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Correo electrónico</label>
-            <input type="email" name="email" class="form-control" value="@Model.Email" required />
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+
+        <button type="submit" class="btn btn-primary w-100 mt-4">Guardar cambios</button>
     </form>
-    <div class="text-center mt-3">
-        <a asp-action="CambiarNombreUsuario" class="text-muted small">Cambiar solo mi nombre de usuario</a>
-    </div>
+
+    <a asp-action="CambiarPassword" class="btn btn-link w-100 mt-2">Cambiar mi contraseña</a>
 </div>
 
 @section Scripts {
+    <script src="~/js/aura-formularios.js"></script>
     <script>
+        initCascadaUbicacion('Perfil');
+
         function mostrarPreviaYEnviar(input) {
             if (input.files && input.files[0]) {
-                // Vista previa inmediata, antes incluso de que termine de subir
                 const lector = new FileReader();
                 lector.onload = e => document.getElementById('previaFoto').src = e.target.result;
                 lector.readAsDataURL(input.files[0]);
-
-                // Enviamos automáticamente el formulario de foto al elegir el archivo
                 input.closest('form').submit();
             }
         }

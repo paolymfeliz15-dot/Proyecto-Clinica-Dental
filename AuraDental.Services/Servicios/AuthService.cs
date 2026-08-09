@@ -71,20 +71,47 @@ namespace AuraDental.Aplicacion
             return (true, "Contraseña actualizada correctamente.");
         }
 
-        public (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email)
+        public (bool exito, string mensaje) ActualizarPerfil(int usuarioId, EditarPerfilDto datos)
         {
             var usuario = _usuarioRepository.ObtenerPorId(usuarioId);
             if (usuario == null)
                 return (false, "Usuario no encontrado.");
 
-            bool correoEnUso = _usuarioRepository.Consultar()
-                .Any(u => u.Email == email && u.UsuarioId != usuarioId);
+            var (emailValido, mensajeEmail, email) = Email.Crear(datos.Email);
+            if (!emailValido)
+                return (false, mensajeEmail);
 
+            bool correoEnUso = _usuarioRepository.Consultar()
+                .Any(u => u.Email == email!.Valor && u.UsuarioId != usuarioId);
             if (correoEnUso)
                 return (false, "Ese correo ya lo está usando otra cuenta.");
 
-            usuario.NombreCompleto = nombreCompleto;
-            usuario.Email = email;
+            // La cédula es opcional para Administrador/Asistente creados antes de HU-21,
+            // así que solo la validamos si viene con contenido
+            if (!string.IsNullOrWhiteSpace(datos.Cedula))
+            {
+                var (cedulaValida, mensajeCedula, cedula) = Cedula.Crear(datos.Cedula);
+                if (!cedulaValida)
+                    return (false, mensajeCedula);
+
+                bool cedulaEnUso = _usuarioRepository.Consultar()
+                    .Any(u => u.Cedula == cedula!.Valor && u.UsuarioId != usuarioId);
+                if (cedulaEnUso)
+                    return (false, "Esa cédula ya está registrada en otra cuenta.");
+
+                usuario.Cedula = cedula!.Valor;
+            }
+
+            usuario.NombreCompleto = datos.NombreCompleto;
+            usuario.Apellidos = datos.Apellidos;
+            usuario.Telefono = datos.Telefono;
+            usuario.Email = email!.Valor;
+            usuario.Direccion = datos.Direccion;
+            usuario.Pais = datos.Pais;
+            usuario.EstadoProvincia = datos.EstadoProvincia;
+            usuario.Ciudad = datos.Ciudad;
+            usuario.Sector = datos.Sector;
+
             _usuarioRepository.GuardarCambios();
 
             return (true, "Perfil actualizado correctamente.");

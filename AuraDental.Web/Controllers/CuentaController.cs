@@ -1,12 +1,7 @@
 using AuraDental.Aplicacion;
 using AuraDental.Aplicacion.Dtos;
-using AuraDental.Dominio.Entidades;
 using AuraDental.Infraestructura;
-using AuraDental.Web.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.IO;
 
 namespace AuraDental.Web.Controllers
 {
@@ -143,75 +138,74 @@ namespace AuraDental.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult CambiarNombreUsuario()
+        public async Task<IActionResult> EditarPerfil()
         {
             var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
             if (usuarioId == null) return RedirectToAction("Login");
-
-            ViewBag.NombreActual = HttpContext.Session.GetString("NombreCompleto");
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult CambiarNombreUsuario(string nuevoNombre)
-        {
-            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
-            if (usuarioId == null) return RedirectToAction("Login");
-
-            var (exito, mensaje) = _authService.CambiarNombreUsuario(usuarioId.Value, nuevoNombre);
-
-            if (!exito)
-            {
-                ViewBag.Error = mensaje;
-                ViewBag.NombreActual = HttpContext.Session.GetString("NombreCompleto");
-                return View();
-            }
-
-            // Actualizamos la sesión para que el cambio se vea reflejado de inmediato en el navbar
-            HttpContext.Session.SetString("NombreCompleto", nuevoNombre.Trim());
-
-            ViewBag.Exito = mensaje;
-            ViewBag.NombreActual = nuevoNombre.Trim();
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult EditarPerfil()
-        {
-            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
-            if (usuarioId == null)
-                return RedirectToAction("Login");
 
             var usuario = _context.Usuarios.Find(usuarioId.Value);
-            if (usuario == null)
-                return RedirectToAction("Login");
+            if (usuario == null) return RedirectToAction("Login");
 
-            return View(usuario);
+            ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
+
+            ViewBag.EstadosActuales = !string.IsNullOrWhiteSpace(usuario.Pais)
+                ? await _paisService.ObtenerEstadosAsync(usuario.Pais)
+                : new List<string>();
+
+            ViewBag.CiudadesActuales = !string.IsNullOrWhiteSpace(usuario.Pais) && !string.IsNullOrWhiteSpace(usuario.EstadoProvincia)
+                ? await _paisService.ObtenerCiudadesAsync(usuario.Pais, usuario.EstadoProvincia)
+                : new List<string>();
+
+            var datos = new EditarPerfilDto
+            {
+                NombreCompleto = usuario.NombreCompleto,
+                Apellidos = usuario.Apellidos ?? string.Empty,
+                Cedula = usuario.Cedula ?? string.Empty,
+                Telefono = usuario.Telefono ?? string.Empty,
+                Email = usuario.Email,
+                Direccion = usuario.Direccion ?? string.Empty,
+                Pais = usuario.Pais ?? string.Empty,
+                EstadoProvincia = usuario.EstadoProvincia ?? string.Empty,
+                Ciudad = usuario.Ciudad ?? string.Empty,
+                Sector = usuario.Sector ?? string.Empty
+            };
+
+            // El modelo de la vista también necesita la foto actual y el UsuarioId para el formulario de foto
+            ViewBag.FotoPerfilUrl = usuario.FotoPerfilUrl;
+
+            return View(datos);
         }
 
         [HttpPost]
-        public IActionResult EditarPerfil(string nombreCompleto, string email)
+        public async Task<IActionResult> EditarPerfil(EditarPerfilDto datos)
         {
             var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
-            if (usuarioId == null)
-                return RedirectToAction("Login");
+            if (usuarioId == null) return RedirectToAction("Login");
 
-            var (exito, mensaje) = _authService.ActualizarPerfil(usuarioId.Value, nombreCompleto, email);
+            var (exito, mensaje) = _authService.ActualizarPerfil(usuarioId.Value, datos);
 
             if (!exito)
             {
                 ViewBag.Error = mensaje;
-                var usuario = _context.Usuarios.Find(usuarioId.Value);
-                return View(usuario);
+                ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
+                ViewBag.EstadosActuales = !string.IsNullOrWhiteSpace(datos.Pais) ? await _paisService.ObtenerEstadosAsync(datos.Pais) : new List<string>();
+                ViewBag.CiudadesActuales = !string.IsNullOrWhiteSpace(datos.Pais) && !string.IsNullOrWhiteSpace(datos.EstadoProvincia) ? await _paisService.ObtenerCiudadesAsync(datos.Pais, datos.EstadoProvincia) : new List<string>();
+                var usuarioActual = _context.Usuarios.Find(usuarioId.Value);
+                ViewBag.FotoPerfilUrl = usuarioActual?.FotoPerfilUrl;
+                return View(datos);
             }
 
-            // Actualizamos también el nombre guardado en la sesión,
-            // para que se refleje de inmediato en el panel sin tener que reloguear
-            HttpContext.Session.SetString("NombreCompleto", nombreCompleto);
+            // Sincronizamos el nombre en sesión, para que se refleje de inmediato en el navbar
+            HttpContext.Session.SetString("NombreCompleto", datos.NombreCompleto);
 
             ViewBag.Exito = mensaje;
-            var usuarioActualizado = _context.Usuarios.Find(usuarioId.Value);
-            return View(usuarioActualizado);
+            ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
+            ViewBag.EstadosActuales = await _paisService.ObtenerEstadosAsync(datos.Pais);
+            ViewBag.CiudadesActuales = await _paisService.ObtenerCiudadesAsync(datos.Pais, datos.EstadoProvincia);
+            var usuarioRecargado = _context.Usuarios.Find(usuarioId.Value);
+            ViewBag.FotoPerfilUrl = usuarioRecargado?.FotoPerfilUrl;
+
+            return View(datos);
         }
 
         [HttpPost]

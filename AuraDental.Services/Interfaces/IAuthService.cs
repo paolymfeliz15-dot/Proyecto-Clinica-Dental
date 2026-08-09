@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using AuraDental.Aplicacion.Dtos;
 using AuraDental.Dominio.Entidades;
+using System.Threading.Tasks;
 
 namespace AuraDental.Aplicacion
 {
@@ -13,17 +14,14 @@ namespace AuraDental.Aplicacion
 
         (bool exito, string mensaje) CambiarPassword(int usuarioId, string passwordActual, string passwordNueva);
 
-        (bool exito, string mensaje) ActualizarPerfil(int usuarioId, string nombreCompleto, string email);
+        (bool exito, string mensaje) ActualizarPerfil(int usuarioId, EditarPerfilDto datos);
 
-        (bool exito, string mensaje) RegistrarPaciente(AuraDental.Aplicacion.Dtos.RegistroPacienteDto datos);
+        (bool exito, string mensaje) RegistrarPaciente(RegistroPacienteDto datos);
 
         (bool exito, string mensaje) VerificarCorreo(string token);
 
         Task<(bool exito, string mensaje)> ReenviarVerificacionAsync(string email);
 
         (bool exito, string mensaje, string? rutaFoto) ActualizarFotoPerfil(int usuarioId, byte[] contenidoArchivo, string extension);
-
-        // Si planeas usar 'CambiarNombreUsuario' desde el controller, agrégalo también:
-        (bool exito, string mensaje) CambiarNombreUsuario(int usuarioId, string nuevoNombre);
     }
 }

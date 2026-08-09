@@ -153,9 +153,15 @@ namespace AuraDental.Tests.Servicios
             var otroUsuario = new Usuario { UsuarioId = 2, Email = "ocupado@correo.com" };
 
             _usuarioRepoMock.Setup(r => r.ObtenerPorId(1)).Returns(usuarioAEditar);
-            _usuarioRepoMock.Setup(r => r.Consultar()).Returns(new List<Usuario> { otroUsuario }.AsQueryable());
+            _usuarioRepoMock.Setup(r => r.Consultar()).Returns(new List<Usuario> { usuarioAEditar, otroUsuario }.AsQueryable());
 
-            var (exito, mensaje) = _authService.ActualizarPerfil(1, "Juan", "ocupado@correo.com");
+            var datos = new EditarPerfilDto
+            {
+                NombreCompleto = "Juan",
+                Email = "ocupado@correo.com"
+            };
+
+            var (exito, mensaje) = _authService.ActualizarPerfil(1, datos);
 
             Assert.False(exito);
             Assert.Contains("otra cuenta", mensaje);
