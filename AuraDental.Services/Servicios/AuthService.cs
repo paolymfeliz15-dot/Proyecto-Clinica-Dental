@@ -134,6 +134,12 @@ namespace AuraDental.Aplicacion
 
         public (bool exito, string mensaje) RegistrarPaciente(RegistroPacienteDto datos)
         {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.NombreCompleto ?? "", @"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$"))
+                return (false, "El nombre solo puede contener letras.");
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Apellidos ?? "", @"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$"))
+                return (false, "Los apellidos solo pueden contener letras.");
+
             var (emailValido, mensajeEmail, email) = Email.Crear(datos.Email);
             if (!emailValido)
                 return (false, mensajeEmail);
@@ -141,6 +147,9 @@ namespace AuraDental.Aplicacion
             var (cedulaValida, mensajeCedula, cedula) = Cedula.Crear(datos.Cedula);
             if (!cedulaValida)
                 return (false, mensajeCedula);
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Telefono ?? "", @"^\d{3}-\d{3}-\d{4}$"))
+                return (false, "El teléfono debe tener el formato 000-000-0000.");
 
             if (ExisteEmail(email!.Valor))
                 return (false, "Ese correo ya está registrado.");

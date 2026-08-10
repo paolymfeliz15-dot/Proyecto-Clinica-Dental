@@ -50,6 +50,60 @@ function initTogglePassword() {
     });
 }
 
+// Formato automático de Cédula: 000-0000000-0
+function formatearCedula(valor) {
+    const digitos = valor.replace(/\D/g, '').slice(0, 11);
+    if (digitos.length <= 3) return digitos;
+    if (digitos.length <= 10) return `${digitos.slice(0, 3)}-${digitos.slice(3)}`;
+    return `${digitos.slice(0, 3)}-${digitos.slice(3, 10)}-${digitos.slice(10)}`;
+}
+
+// Formato automático de Teléfono: 000-000-0000
+function formatearTelefono(valor) {
+    const digitos = valor.replace(/\D/g, '').slice(0, 10);
+    if (digitos.length <= 3) return digitos;
+    if (digitos.length <= 6) return `${digitos.slice(0, 3)}-${digitos.slice(3)}`;
+    return `${digitos.slice(0, 3)}-${digitos.slice(3, 6)}-${digitos.slice(6)}`;
+}
+
+function initFormatoAutomatico() {
+    document.querySelectorAll('[data-formato="cedula"]').forEach(input => {
+        input.setAttribute('maxlength', '13');
+        input.setAttribute('inputmode', 'numeric');
+        input.addEventListener('input', () => {
+            input.value = formatearCedula(input.value);
+        });
+    });
+
+    document.querySelectorAll('[data-formato="telefono"]').forEach(input => {
+        input.setAttribute('maxlength', '12');
+        input.setAttribute('inputmode', 'numeric');
+        input.addEventListener('input', () => {
+            input.value = formatearTelefono(input.value);
+        });
+    });
+}
+
+// Bloquea números y símbolos en campos de nombre — permite letras, espacios y tildes/ñ
+function formatearSoloLetras(valor) {
+    return valor.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]/g, '');
+}
+
+function initSoloLetras() {
+    document.querySelectorAll('[data-formato="nombre"]').forEach(input => {
+        input.addEventListener('input', () => {
+            const posicion = input.selectionStart;
+            const valorAnterior = input.value;
+            input.value = formatearSoloLetras(input.value);
+            if (input.value.length !== valorAnterior.length) {
+                input.setSelectionRange(posicion - 1, posicion - 1);
+            }
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTogglePassword();
+    initFormatoAutomatico();
+    initSoloLetras();
 });

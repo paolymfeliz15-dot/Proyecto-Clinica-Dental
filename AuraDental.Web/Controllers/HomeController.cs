@@ -14,8 +14,12 @@ namespace AuraDental.Web.Controllers
 
         public IActionResult Index()
         {
-            // Mostramos hasta 3 servicios destacados en la vista previa del inicio;
-            // el catálogo completo con imágenes llega en HU-20 (Sprint 5)
+            var rol = HttpContext.Session.GetString("Rol");
+
+            if (rol == "Administrador") return RedirectToAction("Index", "AdministradorDashboard");
+            if (rol == "Asistente") return RedirectToAction("Index", "AsistenteDashboard");
+            if (rol == "Paciente") return RedirectToAction("Index", "PacienteDashboard");
+
             var servicios = _servicioService.ObtenerTodos()
                 .Where(s => s.Activo)
                 .Take(3)

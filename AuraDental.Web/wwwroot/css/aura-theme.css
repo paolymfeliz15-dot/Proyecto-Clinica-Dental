@@ -1,20 +1,25 @@
-﻿/* ===== AuraDental — Design Tokens v2 (Rediseño Visual - HU-23) ===== */
+﻿/* ===== AuraDental — Design System v4 ===== */
 :root {
-    --aura-teal-900: #0B4A42;
-    --aura-teal-700: #14786C;
-    --aura-teal-500: #2FA894;
-    --aura-teal-200: #C9E7E1;
-    --aura-teal-100: #EEF7F5;
-    --aura-amber-500: #E8A33D;
-    --aura-amber-600: #D48F28;
-    --aura-ink: #2B3538;
-    --aura-muted: #75868A;
-    --aura-bg: #FAFAF8;
+    --aura-navy-900: #0B2545;
+    --aura-navy-700: #13315C;
+    --aura-navy-500: #2F6FED;
+    --aura-navy-100: #EAF0FB;
+    --aura-gold-600: #D98F1E;
+    --aura-gold-500: #F2A93B;
+    --aura-gold-100: #FCEFD9;
+    --aura-ink: #101828;
+    --aura-muted: #667085;
+    --aura-bg: #F5F7FA;
     --aura-surface: #FFFFFF;
-    --aura-border: #EAEFEE;
+    --aura-border: #E2E6ED;
     --aura-danger: #C0392B;
-    --aura-radius: 16px;
-    --aura-radius-sm: 10px;
+    --aura-danger-bg: #FBEBE9;
+    --aura-warning-bg: #FCF3E3;
+    --aura-warning-text: #8A5E12;
+    --aura-radius: 12px;
+    --aura-radius-sm: 8px;
+    --aura-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.08);
+    --aura-shadow-md: 0 4px 10px rgba(16, 24, 40, 0.08), 0 2px 4px rgba(16, 24, 40, 0.06);
 }
 
 body {
@@ -22,13 +27,18 @@ body {
     background-color: var(--aura-bg);
     color: var(--aura-ink);
     line-height: 1.6;
+    font-size: 0.96rem;
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    font-weight: 600;
-    color: var(--aura-teal-900);
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--aura-navy-900);
     letter-spacing: -0.01em;
+}
+
+h1 {
+    font-weight: 800;
 }
 
 .container {
@@ -36,205 +46,282 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
     padding-bottom: 1.5rem;
 }
 
-/* ===== Navbar — plano, sin gradiente fuerte ===== */
+/* ===== Navbar — con línea dorada de firma ===== */
 .aura-navbar {
-    background: var(--aura-teal-700);
-    padding: 1rem 0;
+    background: var(--aura-navy-900);
+    padding: 0.9rem 0;
+    position: relative;
+    border-bottom: 3px solid var(--aura-gold-500);
 }
 
     .aura-navbar .navbar-brand {
         color: #FFFFFF !important;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 1.25rem;
+        letter-spacing: -0.01em;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.55rem;
     }
 
     .aura-navbar .nav-link {
-        color: rgba(255,255,255,0.82) !important;
+        color: rgba(255,255,255,0.75) !important;
         font-weight: 500;
-        padding: 0.4rem 0.85rem !important;
-        border-radius: 20px;
+        font-size: 0.9rem;
+        padding: 0.45rem 0.85rem !important;
+        border-radius: var(--aura-radius-sm);
         transition: background 0.15s ease, color 0.15s ease;
-        font-size: 0.94rem;
     }
 
         .aura-navbar .nav-link:hover {
-            background: rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.09);
             color: #FFFFFF !important;
         }
 
         .aura-navbar .nav-link.active {
-            background: rgba(255,255,255,0.16);
-            color: #FFFFFF !important;
+            background: rgba(242,169,59,0.16);
+            color: var(--aura-gold-500) !important;
         }
 
-/* ===== Buttons — más suaves, menos saturados ===== */
+/* ===== Buttons ===== */
 .btn {
     border-radius: var(--aura-radius-sm);
-    font-weight: 500;
-    padding: 0.5rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.55rem 1.2rem;
+    box-shadow: var(--aura-shadow-sm);
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
 }
 
-.btn-primary {
-    background-color: var(--aura-teal-700);
-    border-color: var(--aura-teal-700);
-}
-
-    .btn-primary:hover, .btn-primary:focus {
-        background-color: var(--aura-teal-900);
-        border-color: var(--aura-teal-900);
+    .btn:hover {
+        box-shadow: var(--aura-shadow-md);
     }
 
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+.btn-primary {
+    background-color: var(--aura-navy-700);
+    border-color: var(--aura-navy-700);
+}
+
+    .btn-primary:hover {
+        background-color: var(--aura-navy-900);
+        border-color: var(--aura-navy-900);
+    }
+
+/* Acción de pago/confirmación: único lugar donde aparece el dorado como fondo */
 .btn-success {
-    background-color: var(--aura-amber-500);
-    border-color: var(--aura-amber-500);
-    color: var(--aura-ink);
-    font-weight: 600;
+    background-color: var(--aura-gold-500);
+    border-color: var(--aura-gold-500);
+    color: var(--aura-navy-900);
+    font-weight: 700;
 }
 
     .btn-success:hover {
-        background-color: var(--aura-amber-600);
-        border-color: var(--aura-amber-600);
-        color: var(--aura-ink);
+        background-color: var(--aura-gold-600);
+        border-color: var(--aura-gold-600);
+        color: #FFFFFF;
     }
 
 .btn-outline-primary {
-    color: var(--aura-teal-700);
-    border-color: var(--aura-teal-200);
+    color: var(--aura-navy-700);
+    border: 1.5px solid var(--aura-navy-100);
+    background: transparent;
+    box-shadow: none;
 }
 
     .btn-outline-primary:hover {
-        background-color: var(--aura-teal-100);
-        border-color: var(--aura-teal-500);
-        color: var(--aura-teal-900);
+        background-color: var(--aura-navy-100);
+        border-color: var(--aura-navy-500);
+        color: var(--aura-navy-900);
     }
 
 .btn-outline-danger {
-    border-color: #F1D4D0;
     color: var(--aura-danger);
+    border: 1.5px solid #F2D6D2;
+    background: transparent;
+    box-shadow: none;
 }
 
     .btn-outline-danger:hover {
-        background-color: #FBEEEC;
+        background-color: var(--aura-danger-bg);
         border-color: var(--aura-danger);
-        color: var(--aura-danger);
     }
 
 .btn-outline-secondary {
-    border-color: var(--aura-border);
     color: var(--aura-muted);
+    border: 1.5px solid var(--aura-border);
+    background: transparent;
+    box-shadow: none;
 }
 
-/* ===== Cards — sombra casi imperceptible ===== */
+    .btn-outline-secondary:hover {
+        background-color: var(--aura-bg);
+        border-color: var(--aura-muted);
+    }
+
+.btn-link {
+    color: var(--aura-navy-700);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+    .btn-link:hover {
+        color: var(--aura-navy-900);
+        text-decoration: underline;
+    }
+
+/* ===== Cards — con elevación suave real ===== */
 .card {
     border: 1px solid var(--aura-border);
     border-radius: var(--aura-radius);
-    box-shadow: 0 1px 3px rgba(11, 74, 66, 0.04);
-    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    box-shadow: var(--aura-shadow-sm);
+    background: var(--aura-surface);
+    transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
 }
 
 a .card:hover {
-    box-shadow: 0 4px 16px rgba(11, 74, 66, 0.08);
-    border-color: var(--aura-teal-200);
+    box-shadow: var(--aura-shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--aura-navy-500);
 }
 
-/* ===== Badges — más suaves, tipo "pill" con fondo claro ===== */
+/* ===== Badges ===== */
 .badge {
-    font-weight: 500;
-    padding: 0.4em 0.8em;
-    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.42em 0.75em;
+    border-radius: 999px;
 }
 
     .badge.bg-success {
-        background-color: var(--aura-teal-100) !important;
-        color: var(--aura-teal-900) !important;
+        background-color: var(--aura-gold-100) !important;
+        color: var(--aura-gold-600) !important;
     }
 
     .badge.bg-primary {
-        background-color: var(--aura-teal-100) !important;
-        color: var(--aura-teal-700) !important;
+        background-color: var(--aura-navy-100) !important;
+        color: var(--aura-navy-700) !important;
     }
 
     .badge.bg-warning {
-        background-color: #FBF0DE !important;
-        color: #8A6316 !important;
+        background-color: var(--aura-warning-bg) !important;
+        color: var(--aura-warning-text) !important;
     }
 
     .badge.bg-secondary {
-        background-color: #F1F3F2 !important;
+        background-color: #EEF0F2 !important;
         color: var(--aura-muted) !important;
     }
 
-/* ===== Tables — encabezado discreto ===== */
-.table {
-    border-radius: var(--aura-radius-sm);
-    overflow: hidden;
+    .badge.bg-danger {
+        background-color: var(--aura-danger-bg) !important;
+        color: var(--aura-danger) !important;
+    }
+
+/* ===== Tables ===== */
+.table thead th {
+    color: var(--aura-muted);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1.5px solid var(--aura-border);
+    border-top: none;
+    padding-bottom: 0.6rem;
 }
 
-    .table thead {
-        background-color: transparent;
-    }
+.table td {
+    border-color: var(--aura-border);
+    vertical-align: middle;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
 
-        .table thead th {
-            color: var(--aura-muted);
-            font-weight: 600;
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            border-bottom: 1px solid var(--aura-border);
-            border-top: none;
-        }
+.table-hover tbody tr:hover {
+    background-color: var(--aura-navy-100);
+}
 
-    .table td {
-        border-color: var(--aura-border);
-        vertical-align: middle;
-    }
-
-/* ===== Footer — más liviano ===== */
+/* ===== Footer ===== */
 .aura-footer {
-    background-color: var(--aura-teal-100);
-    color: var(--aura-teal-900);
-    padding: 1.25rem 0;
+    background-color: var(--aura-navy-900);
+    color: rgba(255,255,255,0.65);
+    padding: 1.4rem 0;
     margin-top: 3rem;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
 }
 
     .aura-footer a {
-        color: var(--aura-teal-700);
+        color: var(--aura-gold-500);
+        text-decoration: none;
     }
 
 /* ===== Forms ===== */
 .form-control, .form-select {
     border-radius: var(--aura-radius-sm);
-    border-color: var(--aura-border);
-    padding: 0.55rem 0.85rem;
+    border: 1.5px solid var(--aura-border);
+    padding: 0.6rem 0.85rem;
+    font-size: 0.92rem;
+    background-color: var(--aura-surface);
 }
 
     .form-control:focus, .form-select:focus {
-        border-color: var(--aura-teal-500);
-        box-shadow: 0 0 0 0.15rem rgba(47, 168, 148, 0.15);
+        border-color: var(--aura-navy-500);
+        box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.14);
     }
 
 .form-label {
-    font-weight: 500;
-    font-size: 0.9rem;
+    font-weight: 600;
+    font-size: 0.85rem;
     color: var(--aura-ink);
+    margin-bottom: 0.35rem;
 }
 
-/* ===== Alerts — más suaves ===== */
+/* ===== Alerts ===== */
 .alert {
     border-radius: var(--aura-radius-sm);
-    border: none;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    box-shadow: var(--aura-shadow-sm);
 }
 
 .alert-success {
-    background-color: var(--aura-teal-100);
-    color: var(--aura-teal-900);
+    background-color: var(--aura-gold-100);
+    color: var(--aura-gold-600);
+    border-color: #F3DDAE;
 }
 
 .alert-danger {
-    background-color: #FBEEEC;
-    color: #8A2E22;
+    background-color: var(--aura-danger-bg);
+    color: var(--aura-danger);
+    border-color: #F2D6D2;
+}
+
+.alert-info {
+    background-color: var(--aura-navy-100);
+    color: var(--aura-navy-700);
+    border-color: #D6E2ED;
+}
+
+/* ===== Eyebrow / etiqueta pequeña sobre títulos de sección ===== */
+.aura-eyebrow {
+    display: inline-block;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--aura-gold-600);
+    margin-bottom: 0.35rem;
+}
+
+h2 {
+    margin-bottom: 0.4rem;
+}
+
+.text-muted {
+    color: var(--aura-muted) !important;
 }
