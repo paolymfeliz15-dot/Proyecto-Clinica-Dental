@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuraDental.Infraestructura.Migrations
 {
     [DbContext(typeof(AuraDentalDbContext))]
-    [Migration("20260809150054_InitialCreate")]
+    [Migration("20260810012141_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
