@@ -75,9 +75,10 @@ namespace AuraDental.Tests.Servicios
             var datos = new RegistroPacienteDto
             {
                 NombreCompleto = "Juan",
-                Apellidos = "Pérez",
+                Apellidos = "Perez",
                 Email = "paciente@correo.com",
                 Cedula = "001-1234567-8",
+                Telefono = "809-123-4567",
                 Password = "Clave123"
             };
 
@@ -95,8 +96,10 @@ namespace AuraDental.Tests.Servicios
             var datos = new RegistroPacienteDto
             {
                 NombreCompleto = "Juan",
+                Apellidos = "Perez",
                 Email = "correo-sin-formato",
                 Cedula = "001-1234567-8",
+                Telefono = "809-123-4567",
                 Password = "Clave123"
             };
 
@@ -114,8 +117,10 @@ namespace AuraDental.Tests.Servicios
             var datos = new RegistroPacienteDto
             {
                 NombreCompleto = "Juan",
+                Apellidos = "Perez",
                 Email = "juan@correo.com",
                 Cedula = "123",
+                Telefono = "809-123-4567",
                 Password = "Clave123"
             };
 
@@ -133,9 +138,10 @@ namespace AuraDental.Tests.Servicios
             var datos = new RegistroPacienteDto
             {
                 NombreCompleto = "Juan",
-                Apellidos = "Pérez",
+                Apellidos = "Perez",
                 Email = "juan@correo.com",
                 Cedula = "001-1234567-8",
+                Telefono = "809-123-4567",
                 Password = "Clave123"
             };
 

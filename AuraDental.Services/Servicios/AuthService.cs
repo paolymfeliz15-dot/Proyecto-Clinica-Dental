@@ -158,8 +158,8 @@ namespace AuraDental.Aplicacion
                 return (false, "Ya existe una cuenta registrada con esa cédula.");
 
             var usuario = UsuarioMapper.ARegistroPaciente(datos);
-            usuario.Email = email.Valor;       // usamos el valor ya validado y normalizado
-            usuario.Cedula = cedula!.Valor;    // en vez del texto crudo del formulario
+            usuario.Email = email.Valor;
+            usuario.Cedula = cedula!.Valor;
             usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(datos.Password);
             usuario.RolId = 2;
             usuario.Activo = true;
