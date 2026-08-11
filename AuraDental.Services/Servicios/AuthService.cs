@@ -134,11 +134,16 @@ namespace AuraDental.Aplicacion
 
         public (bool exito, string mensaje) RegistrarPaciente(RegistroPacienteDto datos)
         {
-            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.NombreCompleto ?? "", @"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$"))
-                return (false, "El nombre solo puede contener letras.");
+            if (string.IsNullOrWhiteSpace(datos.Pais))
+                return (false, "El país es obligatorio.");
 
-            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Apellidos ?? "", @"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$"))
-                return (false, "Los apellidos solo pueden contener letras.");
+            if (string.IsNullOrWhiteSpace(datos.NombreCompleto) ||
+                !System.Text.RegularExpressions.Regex.IsMatch(datos.NombreCompleto, @"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$"))
+                return (false, "El nombre es obligatorio y solo puede contener letras.");
+
+            if (string.IsNullOrWhiteSpace(datos.Apellidos) ||
+                !System.Text.RegularExpressions.Regex.IsMatch(datos.Apellidos, @"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$"))
+                return (false, "Los apellidos son obligatorios y solo pueden contener letras.");
 
             var (emailValido, mensajeEmail, email) = Email.Crear(datos.Email);
             if (!emailValido)
@@ -148,8 +153,9 @@ namespace AuraDental.Aplicacion
             if (!cedulaValida)
                 return (false, mensajeCedula);
 
-            if (!System.Text.RegularExpressions.Regex.IsMatch(datos.Telefono ?? "", @"^\d{3}-\d{3}-\d{4}$"))
-                return (false, "El teléfono debe tener el formato 000-000-0000.");
+            if (string.IsNullOrWhiteSpace(datos.Telefono) ||
+                !System.Text.RegularExpressions.Regex.IsMatch(datos.Telefono, @"^\d{3}-\d{3}-\d{4}$"))
+                return (false, "El teléfono es obligatorio y debe tener el formato 000-000-0000.");
 
             if (ExisteEmail(email!.Valor))
                 return (false, "Ese correo ya está registrado.");
@@ -157,9 +163,13 @@ namespace AuraDental.Aplicacion
             if (_usuarioRepository.Consultar().Any(u => u.Cedula == cedula!.Valor))
                 return (false, "Ya existe una cuenta registrada con esa cédula.");
 
+            if (_usuarioRepository.Consultar().Any(u => u.Telefono == datos.Telefono))
+                return (false, "Ya existe una cuenta registrada con ese teléfono.");
+
             var usuario = UsuarioMapper.ARegistroPaciente(datos);
             usuario.Email = email.Valor;
             usuario.Cedula = cedula!.Valor;
+            usuario.Telefono = datos.Telefono;
             usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(datos.Password);
             usuario.RolId = 2;
             usuario.Activo = true;

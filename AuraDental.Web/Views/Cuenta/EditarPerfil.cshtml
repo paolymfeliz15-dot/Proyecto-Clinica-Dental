@@ -40,7 +40,7 @@
     <form method="post" asp-action="EditarPerfil">
         <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label">Nombre de usuario / Nombres</label>
+                <label class="form-label">Nombres</label>
                 <input type="text" name="NombreCompleto" class="form-control" value="@Model.NombreCompleto" data-formato="nombre" required />
             </div>
             <div class="col-md-6">
@@ -61,7 +61,7 @@
             </div>
             <div class="col-12">
                 <label class="form-label">Dirección</label>
-                <input type="text" name="Direccion" class="form-control" value="@Model.Direccion" />
+                <input type="text" name="Direccion" class="form-control" value="@Model.Direccion" placeholder="Opcional" >
             </div>
 
             <div class="col-md-4">
@@ -83,7 +83,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Estado / Provincia</label>
-                <select id="PerfilEstadoProvincia" name="EstadoProvincia" class="form-select">
+                <select id="PerfilEstadoProvincia" name="EstadoProvincia" class="form-select" placeholder="Opcional" >
                     <option value="">Selecciona...</option>
                     @foreach (var estado in estadosActuales)
                     {
@@ -100,7 +100,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Ciudad</label>
-                <select id="PerfilCiudad" name="Ciudad" class="form-select">
+                <select id="PerfilCiudad" name="Ciudad" class="form-select" placeholder="Opcional" >
                     <option value="">Selecciona...</option>
                     @foreach (var ciudad in ciudadesActuales)
                     {
@@ -118,7 +118,7 @@
 
             <div class="col-12">
                 <label class="form-label">Sector</label>
-                <input type="text" name="Sector" class="form-control" value="@Model.Sector" />
+                <input type="text" name="Sector" class="form-control" value="@Model.Sector" placeholder="Opcional" >
             </div>
         </div>
 

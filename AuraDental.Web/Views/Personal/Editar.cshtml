@@ -41,7 +41,7 @@
             </div>
             <div class="col-12">
                 <label class="form-label">Dirección</label>
-                <input type="text" name="Direccion" class="form-control" value="@Model.Direccion" required />
+                <input type="text" name="Direccion" class="form-control" value="@Model.Direccion" placeholder="Opcional" >
             </div>
 
             <div class="col-md-4">
@@ -63,7 +63,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Estado / Provincia</label>
-                <select id="PersonalEstadoProvincia" name="EstadoProvincia" class="form-select" required>
+                <select id="PersonalEstadoProvincia" name="EstadoProvincia" class="form-select" placeholder="Opcional" >
                     <option value="">Selecciona...</option>
                     @foreach (var estado in estadosActuales)
                     {
@@ -80,7 +80,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Ciudad</label>
-                <select id="PersonalCiudad" name="Ciudad" class="form-select" required>
+                <select id="PersonalCiudad" name="Ciudad" class="form-select" placeholder="Opcional" >
                     <option value="">Selecciona...</option>
                     @foreach (var ciudad in ciudadesActuales)
                     {
@@ -98,7 +98,7 @@
 
             <div class="col-12">
                 <label class="form-label">Sector</label>
-                <input type="text" name="Sector" class="form-control" value="@Model.Sector" required />
+                <input type="text" name="Sector" class="form-control" value="@Model.Sector" placeholder="Opcional" />
             </div>
 
             <div class="col-12">

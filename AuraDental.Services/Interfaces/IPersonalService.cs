@@ -10,5 +10,7 @@ namespace AuraDental.Aplicacion
         void Crear(PersonalDto datos);
         void Actualizar(PersonalDto datos);
         void CambiarEstado(int id, bool activo);
+        bool ExisteCedula(string cedula, int? idExcluir = null);
+        bool ExisteTelefono(string telefono, int? idExcluir = null);
     }
 }

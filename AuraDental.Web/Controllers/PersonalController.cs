@@ -41,12 +41,15 @@ namespace AuraDental.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Crear(PersonalDto datos)
+        public async Task<IActionResult> Crear(PersonalDto datos)
         {
-            if (_personalService.ExisteEmail(datos.Email))
+            var error = ValidarDuplicados(datos, idExcluir: null);
+
+            if (error != null)
             {
-                ViewBag.Error = "Ese correo ya está registrado.";
+                ViewBag.Error = error;
                 CargarRolesPersonal();
+                ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
                 return View(datos);
             }
 
@@ -62,17 +65,14 @@ namespace AuraDental.Web.Controllers
             CargarRolesPersonal();
             ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
 
-            if (!string.IsNullOrWhiteSpace(usuario.Pais))
-                ViewBag.EstadosActuales = await _paisService.ObtenerEstadosAsync(usuario.Pais);
-            else
-                ViewBag.EstadosActuales = new List<string>();
+            ViewBag.EstadosActuales = !string.IsNullOrWhiteSpace(usuario.Pais)
+                ? await _paisService.ObtenerEstadosAsync(usuario.Pais)
+                : new List<string>();
 
-            if (!string.IsNullOrWhiteSpace(usuario.Pais) && !string.IsNullOrWhiteSpace(usuario.EstadoProvincia))
-                ViewBag.CiudadesActuales = await _paisService.ObtenerCiudadesAsync(usuario.Pais, usuario.EstadoProvincia);
-            else
-                ViewBag.CiudadesActuales = new List<string>();
+            ViewBag.CiudadesActuales = !string.IsNullOrWhiteSpace(usuario.Pais) && !string.IsNullOrWhiteSpace(usuario.EstadoProvincia)
+                ? await _paisService.ObtenerCiudadesAsync(usuario.Pais, usuario.EstadoProvincia)
+                : new List<string>();
 
-            // Convertimos el DTO de salida en el DTO de entrada que el formulario necesita
             var datos = new PersonalDto
             {
                 UsuarioId = usuario.UsuarioId,
@@ -92,12 +92,17 @@ namespace AuraDental.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Editar(PersonalDto datos)
+        public async Task<IActionResult> Editar(PersonalDto datos)
         {
-            if (_personalService.ExisteEmail(datos.Email, datos.UsuarioId))
+            var error = ValidarDuplicados(datos, idExcluir: datos.UsuarioId);
+
+            if (error != null)
             {
-                ViewBag.Error = "Ese correo ya lo usa otro usuario.";
+                ViewBag.Error = error;
                 CargarRolesPersonal();
+                ViewBag.Paises = await _paisService.ObtenerPaisesAsync();
+                ViewBag.EstadosActuales = !string.IsNullOrWhiteSpace(datos.Pais) ? await _paisService.ObtenerEstadosAsync(datos.Pais) : new List<string>();
+                ViewBag.CiudadesActuales = !string.IsNullOrWhiteSpace(datos.Pais) && !string.IsNullOrWhiteSpace(datos.EstadoProvincia) ? await _paisService.ObtenerCiudadesAsync(datos.Pais, datos.EstadoProvincia) : new List<string>();
                 return View(datos);
             }
 
@@ -110,6 +115,22 @@ namespace AuraDental.Web.Controllers
         {
             _personalService.CambiarEstado(id, activo);
             return RedirectToAction("Index");
+        }
+
+        // Centraliza las 3 validaciones de duplicado, y devuelve el mensaje
+        // de error correspondiente, o null si todo está en orden.
+        private string? ValidarDuplicados(PersonalDto datos, int? idExcluir)
+        {
+            if (_personalService.ExisteEmail(datos.Email, idExcluir))
+                return "Ese correo ya está registrado.";
+
+            if (_personalService.ExisteCedula(datos.Cedula, idExcluir))
+                return "Ya existe una cuenta registrada con esa cédula.";
+
+            if (_personalService.ExisteTelefono(datos.Telefono, idExcluir))
+                return "Ya existe una cuenta registrada con ese teléfono.";
+
+            return null;
         }
 
         private void CargarRolesPersonal()

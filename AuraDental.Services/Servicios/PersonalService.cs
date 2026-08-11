@@ -2,6 +2,7 @@
 using AuraDental.Aplicacion.Mappers;
 using AuraDental.Dominio.Entidades;
 using AuraDental.Dominio.Interfaces;
+using AuraDental.Dominio.ObjetosValor;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuraDental.Aplicacion
@@ -39,6 +40,22 @@ namespace AuraDental.Aplicacion
         {
             return _usuarioRepository.Consultar()
                 .Any(u => u.Email == email && u.UsuarioId != idExcluir);
+        }
+
+        public bool ExisteCedula(string cedula, int? idExcluir = null)
+        {
+            if (string.IsNullOrWhiteSpace(cedula)) return false;
+
+            return _usuarioRepository.Consultar()
+                .Any(u => u.Cedula == cedula && u.UsuarioId != idExcluir);
+        }
+
+        public bool ExisteTelefono(string telefono, int? idExcluir = null)
+        {
+            if (string.IsNullOrWhiteSpace(telefono)) return false;
+
+            return _usuarioRepository.Consultar()
+                .Any(u => u.Telefono == telefono && u.UsuarioId != idExcluir);
         }
 
         public void Crear(PersonalDto datos)
