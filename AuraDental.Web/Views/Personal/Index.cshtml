@@ -43,7 +43,7 @@
 
                         <form asp-action="CambiarEstado" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@usuario.UsuarioId" />
-                            <input type="hidden" name="activo" value="@(!usuario.Activo)" />
+                            <input type="hidden" name="activo" value="@(usuario.Activo ? "False" : "True")" />
                             @if (usuario.Activo)
                             {
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Desactivar</button>
