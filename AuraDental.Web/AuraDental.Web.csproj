@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\AuraDental.Infraestructura\AuraDental.Infraestructura.csproj" />
-	  <ProjectReference Include="..\AuraDental.Aplicacion\AuraDental.Aplicacion.csproj" />
+	  <ProjectReference Include="..\AuraDental.Data\AuraDental.Infraestructura.csproj" />
+	  <ProjectReference Include="..\AuraDental.Services\AuraDental.Aplicacion.csproj" />
   </ItemGroup>
 
 </Project>
