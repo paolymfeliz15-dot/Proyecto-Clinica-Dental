@@ -44,11 +44,13 @@ namespace AuraDental.Aplicacion
             var servicio = _servicioRepository.ObtenerPorId(servicioId);
             if (servicio == null) return new List<BloqueAgenda>();
 
+            // Se usa AsEnumerable() para permitir que el cálculo de TotalMinutes se ejecute en memoria,
+            // ya que EF Core no puede traducir directamente esa operación a SQL.
             return _agendaRepository.Consultar()
                 .Include(b => b.Usuario)
-                .Where(b => b.Disponible
-                         && b.Fecha >= DateTime.Today
-                         && (b.HoraFin - b.HoraInicio).TotalMinutes >= servicio.DuracionMinutos)
+                .Where(b => b.Disponible && b.Fecha >= DateTime.Today)
+                .AsEnumerable()
+                .Where(b => (b.HoraFin - b.HoraInicio).TotalMinutes >= servicio.DuracionMinutos)
                 .OrderBy(b => b.Fecha).ThenBy(b => b.HoraInicio)
                 .ToList();
         }

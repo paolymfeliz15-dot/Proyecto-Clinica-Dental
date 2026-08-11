@@ -79,6 +79,7 @@ namespace AuraDental.Tests.Servicios
                 Email = "paciente@correo.com",
                 Cedula = "001-1234567-8",
                 Telefono = "809-123-4567",
+                Pais = "República Dominicana",
                 Password = "Clave123"
             };
 
@@ -100,6 +101,7 @@ namespace AuraDental.Tests.Servicios
                 Email = "correo-sin-formato",
                 Cedula = "001-1234567-8",
                 Telefono = "809-123-4567",
+                Pais = "República Dominicana",
                 Password = "Clave123"
             };
 
@@ -121,6 +123,7 @@ namespace AuraDental.Tests.Servicios
                 Email = "juan@correo.com",
                 Cedula = "123",
                 Telefono = "809-123-4567",
+                Pais = "República Dominicana",
                 Password = "Clave123"
             };
 
@@ -142,6 +145,7 @@ namespace AuraDental.Tests.Servicios
                 Email = "juan@correo.com",
                 Cedula = "001-1234567-8",
                 Telefono = "809-123-4567",
+                Pais = "República Dominicana",
                 Password = "Clave123"
             };
 
