@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/aura-theme.css" asp-append-version="true" />
 </head>
-<body>
+<body class="aura-body">
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark aura-navbar mb-4">
             <div class="container">
@@ -56,7 +56,7 @@
                         {
                             var fotoNavbar = Context.Session.GetString("FotoPerfilUrl") ?? "/images/default-avatar.svg";
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" asp-controller="Cuenta" asp-action="EditarPerfil">
+                                <a class="nav-link d-flex align-items-center gap-2" asp-controller="Cuenta" asp-action="Perfil">
                                     <img src="@fotoNavbar" alt="Perfil" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover;" />
                                     Mi Perfil
                                 </a>

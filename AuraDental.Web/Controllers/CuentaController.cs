@@ -138,6 +138,18 @@ namespace AuraDental.Web.Controllers
         }
 
         [HttpGet]
+        public IActionResult Perfil()
+        {
+            var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login");
+
+            var usuario = _context.Usuarios.Find(usuarioId.Value);
+            if (usuario == null) return RedirectToAction("Login");
+
+            return View(usuario);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> EditarPerfil()
         {
             var usuarioId = HttpContext.Session.GetInt32("UsuarioId");

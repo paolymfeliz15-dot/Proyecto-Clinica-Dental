@@ -325,3 +325,16 @@ h2 {
 .text-muted {
     color: var(--aura-muted) !important;
 }
+
+.aura-body {
+    padding-bottom: 60px; 
+}
+
+.aura-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1020;
+}
