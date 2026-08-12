@@ -7,7 +7,6 @@ using System.Text;
 using AuraDental.Aplicacion.Dtos;
 using Microsoft.Extensions.Caching.Memory;
 
-
 namespace AuraDental.Aplicacion
 {
     public class PaisService : IPaisService
@@ -71,7 +70,7 @@ namespace AuraDental.Aplicacion
                 var respuesta = JsonSerializer.Deserialize<EstadosRespuestaDto>(json, JsonOpts);
 
                 var nombres = respuesta?.Data?.States?
-                    .Select(e => e.Name)
+                    .Select(e => LimpiarNombreEstado(e.Name))
                     .OrderBy(n => n)
                     .ToList() ?? new List<string>();
 
@@ -82,6 +81,22 @@ namespace AuraDental.Aplicacion
             {
                 return new List<string>();
             }
+        }
+
+        // La API de CountriesNow a veces devuelve el nombre con un sufijo genérico
+        // (ej. "Barahona Province", "Texas State") que no aporta nada al usuario
+        // y se ve poco estético — lo quitamos, dejando solo el nombre real del lugar.
+        private static string LimpiarNombreEstado(string nombre)
+        {
+            var sufijos = new[] { " Province", " State", " Department", " Region", " District", " County", " Governorate", " Prefecture", " Territory" };
+
+            foreach (var sufijo in sufijos)
+            {
+                if (nombre.EndsWith(sufijo, StringComparison.OrdinalIgnoreCase))
+                    return nombre[..^sufijo.Length].Trim();
+            }
+
+            return nombre;
         }
 
         public async Task<List<string>> ObtenerCiudadesAsync(string pais, string estado)

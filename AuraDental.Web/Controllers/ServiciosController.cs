@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 using AuraDental.Aplicacion;
 using AuraDental.Dominio.Entidades;
 using AuraDental.Web.Filters;
@@ -39,7 +41,7 @@ namespace AuraDental.Web.Controllers
 
         // POST: /Servicios/Crear
         [HttpPost]
-        public IActionResult Crear(Servicio servicio)
+        public async Task<IActionResult> Crear(Servicio servicio, IFormFile? imagen)
         {
             if (_servicioService.ExisteNombre(servicio.Nombre))
             {
@@ -53,6 +55,20 @@ namespace AuraDental.Web.Controllers
             {
                 ViewBag.Error = mensaje;
                 return View(servicio);
+            }
+
+            if (imagen != null && imagen.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await imagen.CopyToAsync(memoryStream);
+                var extension = Path.GetExtension(imagen.FileName);
+
+                var (exitoImagen, mensajeImagen) = _servicioService.SubirImagen(servicio.ServicioId, memoryStream.ToArray(), extension);
+
+                if (!exitoImagen)
+                {
+                    TempData["Mensaje"] = $"Servicio creado, pero la imagen no se pudo guardar: {mensajeImagen}";
+                }
             }
 
             return RedirectToAction("Index");
@@ -69,7 +85,7 @@ namespace AuraDental.Web.Controllers
 
         // POST: /Servicios/Editar/5
         [HttpPost]
-        public IActionResult Editar(Servicio servicio)
+        public async Task<IActionResult> Editar(Servicio servicio, IFormFile? imagen)
         {
             if (_servicioService.ExisteNombre(servicio.Nombre, servicio.ServicioId))
             {
@@ -78,6 +94,21 @@ namespace AuraDental.Web.Controllers
             }
 
             _servicioService.Actualizar(servicio);
+
+            if (imagen != null && imagen.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await imagen.CopyToAsync(memoryStream);
+                var extension = Path.GetExtension(imagen.FileName);
+
+                var (exitoImagen, mensajeImagen) = _servicioService.SubirImagen(servicio.ServicioId, memoryStream.ToArray(), extension);
+
+                if (!exitoImagen)
+                {
+                    TempData["Mensaje"] = $"Servicio actualizado, pero la imagen no se pudo guardar: {mensajeImagen}";
+                }
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -87,26 +118,6 @@ namespace AuraDental.Web.Controllers
         {
             _servicioService.CambiarEstado(id, activo);
             return RedirectToAction("Index");
-        }
-
-        // POST: /Servicios/SubirImagen/5
-        [HttpPost]
-        public async Task<IActionResult> SubirImagen(int id, IFormFile imagen)
-        {
-            if (imagen == null || imagen.Length == 0)
-            {
-                TempData["Error"] = "Debes seleccionar una imagen.";
-                return RedirectToAction("Detalles", new { id });
-            }
-
-            using var memoryStream = new MemoryStream();
-            await imagen.CopyToAsync(memoryStream);
-            var extension = Path.GetExtension(imagen.FileName);
-
-            var (exito, mensaje) = _servicioService.SubirImagen(id, memoryStream.ToArray(), extension);
-
-            TempData["Error"] = exito ? null : mensaje;
-            return RedirectToAction("Detalles", new { id });
         }
     }
 }

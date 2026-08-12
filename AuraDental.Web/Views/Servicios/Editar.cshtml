@@ -12,8 +12,15 @@
         <div class="alert alert-danger">@ViewBag.Error</div>
     }
 
-    <form asp-action="Editar" method="post">
+    <form asp-action="Editar" method="post" enctype="multipart/form-data">
         <input type="hidden" name="ServicioId" value="@Model.ServicioId" />
+
+        @{
+            var imagenActual = string.IsNullOrWhiteSpace(Model.ImagenUrl) ? "/images/default-service.svg" : Model.ImagenUrl;
+        }
+        <div class="mb-3 text-center">
+            <img src="@imagenActual" alt="@Model.Nombre" style="width: 160px; height: 120px; object-fit: cover; border-radius: 12px;" />
+        </div>
 
         <div class="mb-3">
             <label class="form-label">Nombre</label>
@@ -28,8 +35,12 @@
             <input type="number" name="DuracionMinutos" class="form-control" value="@Model.DuracionMinutos" min="1" required />
         </div>
         <div class="mb-3">
-            <label class="form-label">Precio (USD$)</label>
+            <label class="form-label">Precio (RD$)</label>
             <input type="number" name="Precio" class="form-control" value="@Model.Precio" step="0.01" min="0" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Cambiar imagen (opcional)</label>
+            <input type="file" name="imagen" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
         </div>
         <button type="submit" class="btn btn-primary">Guardar cambios</button>
         <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>

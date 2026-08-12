@@ -8,22 +8,8 @@
 <div class="container mt-4" style="max-width: 500px;">
     <h2>Detalles</h2>
 
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Error"]</div>
-    }
-
     <img src="@imagenActual" alt="@Model.Nombre"
          style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px;" class="mb-3" />
-
-    <form asp-action="SubirImagen" method="post" enctype="multipart/form-data" class="mb-4">
-        <input type="hidden" name="id" value="@Model.ServicioId" />
-        <label class="form-label small">Cambiar imagen del servicio</label>
-        <div class="input-group">
-            <input type="file" name="imagen" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
-            <button type="submit" class="btn btn-outline-primary">Subir</button>
-        </div>
-    </form>
 
     <dl class="row">
         <dt class="col-sm-4">Nombre</dt>
@@ -42,5 +28,6 @@
         <dd class="col-sm-8">@(Model.Activo ? "Activo" : "Inactivo")</dd>
     </dl>
 
+    <a asp-action="Editar" asp-route-id="@Model.ServicioId" class="btn btn-primary">Editar</a>
     <a asp-action="Index" class="btn btn-outline-secondary">← Volver</a>
 </div>
